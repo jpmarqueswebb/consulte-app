@@ -105,7 +105,7 @@ export function BuscaInput({
         <button
           type="submit"
           className={`efeito-brilho shrink-0 rounded-full bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-navy font-semibold text-white transition-colors hover:brightness-110 ${
-            grande ? 'min-w-[260px] px-8 py-3.5 text-base' : 'px-5 py-2.5 text-sm'
+            grande ? 'px-5 py-3.5 text-sm sm:min-w-[260px] sm:px-8 sm:text-base' : 'px-5 py-2.5 text-sm'
           }`}
         >
           Buscar

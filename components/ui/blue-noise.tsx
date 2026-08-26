@@ -325,6 +325,10 @@ export function ShaderBackground({ className }: { className?: string }) {
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
+    // Desliga o shader no mobile: o custo por frame do fragment shader em
+    // tela cheia deixava a página inicial visivelmente lenta em aparelhos
+    // mais fracos, e lá a imagem de fundo (mobile.webp) já cobre o visual.
+    if (window.matchMedia("(max-width: 767px)").matches) return
     const pendingRelease = pendingContextReleases.get(canvas)
     if (pendingRelease !== undefined) window.clearTimeout(pendingRelease)
     pendingContextReleases.delete(canvas)

@@ -15,14 +15,14 @@ export default function Home() {
           style={{ backgroundImage: 'url(/FUNDOS.webp)' }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/10 via-brand-navy/20 to-brand-navy/60" />
-        <ShaderBackground className="absolute inset-0 mix-blend-screen opacity-40" />
+        <ShaderBackground className="absolute inset-0 hidden mix-blend-screen opacity-40 md:block" />
 
         <div className="relative z-10 w-full max-w-[850px]">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h1 className="text-left text-2xl font-bold text-white">
+          <div className="flex flex-col items-center gap-2 text-center">
+            <h1 className="text-2xl font-bold text-white">
               Ache um médico credenciado Amil
             </h1>
-            <p className="max-w-sm text-right text-sm text-white/85">
+            <p className="max-w-sm text-sm text-white/85">
               Rede local de Itabirito. Encontre por especialidade e ligue ou chame no WhatsApp direto.
             </p>
           </div>
