@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f2942;
+
+  /* Identidade visual Consulte — tons extraídos da logo, aproximando o azul do Google Docs. */
+  --brand-navy: #114c81;
+  --brand-blue: #0b6bc2;
+  --brand-blue-dark: #085687;
+  --brand-blue-light: #61aadc;
+  --brand-sky: #90d4f3;
+  --brand-bg: #eef5fc;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-dark: var(--brand-blue-dark);
+  --color-brand-blue-light: var(--brand-blue-light);
+  --color-brand-sky: var(--brand-sky);
+  --color-brand-bg: var(--brand-bg);
+  --font-sans: var(--font-sora);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sora), Arial, Helvetica, sans-serif;
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+/* Reflexo contínuo dos botões — não altera tamanho/formatação, só adiciona o brilho.
+   mix-blend-mode: plus-lighter faz o brilho se adaptar sozinho à cor de fundo de cada botão. */
+.efeito-brilho {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.efeito-brilho::before {
+  content: '';
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  background: #ffffff;
+  box-shadow: 0 0 30px 20px #ffffffaa;
+  transform: skewX(-30deg);
+  mix-blend-mode: plus-lighter;
+  animation: efeito-brilho-varredura 3s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes efeito-brilho-varredura {
+  0% {
+    opacity: 0;
+    left: 0%;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    left: 100%;
+  }
+}
