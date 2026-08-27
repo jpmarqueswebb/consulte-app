@@ -37,7 +37,14 @@ export function FundoHero({
           </div>
         )}
 
-        <div className="relative z-10 w-full max-w-[960px]">{children}</div>
+        <div className="relative z-10 flex w-full max-w-[960px] flex-col items-center">
+          <img
+            src="/consulte.svg"
+            alt="Consulte"
+            className="mb-6 h-10 w-auto sm:mb-8 sm:h-14"
+          />
+          {children}
+        </div>
 
         <div className="absolute inset-x-0 bottom-2 z-10">
           <Footer variant="dark" />
