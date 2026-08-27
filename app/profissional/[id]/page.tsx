@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { AvatarPlaceholder } from '@/components/AvatarPlaceholder';
 import { AvaliacoesPlaceholder } from '@/components/AvaliacoesPlaceholder';
+import { QuemIndica } from '@/components/QuemIndica';
 import { MapaEmbed } from '@/components/MapaEmbed';
 import { BotaoLigar } from '@/components/BotaoLigar';
 import { BotaoWhatsApp } from '@/components/BotaoWhatsApp';
@@ -82,6 +83,10 @@ export default async function ProfissionalPage({
 
         <div className="mt-5">
           <AvaliacoesPlaceholder />
+        </div>
+
+        <div className="mt-3">
+          <QuemIndica />
         </div>
 
         <div className="mt-6 flex flex-col gap-4">
