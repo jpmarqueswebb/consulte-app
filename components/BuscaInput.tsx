@@ -108,7 +108,7 @@ export function BuscaInput({
         />
         <button
           type="submit"
-          className={`efeito-brilho shrink-0 rounded-full bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-navy font-semibold text-white transition-colors hover:brightness-110 ${
+          className={`efeito-brilho shrink-0 cursor-pointer rounded-full bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-navy font-semibold text-white transition-colors hover:brightness-110 ${
             grande ? 'px-5 py-3.5 text-sm sm:min-w-[260px] sm:px-8 sm:text-base' : 'px-5 py-2.5 text-sm'
           }`}
         >
@@ -124,7 +124,7 @@ export function BuscaInput({
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => irParaEspecialidade(s.nome_normalizado)}
-                className={`flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm ${
+                className={`flex w-full cursor-pointer items-center gap-2 px-4 py-2.5 text-left text-sm ${
                   i === indiceAtivo ? 'bg-brand-bg/80 text-brand-navy' : 'text-gray-700 hover:bg-white/60'
                 }`}
               >

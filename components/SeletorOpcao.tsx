@@ -38,7 +38,7 @@ export function SeletorOpcao({
       <button
         type="button"
         onClick={() => setAberto((v) => !v)}
-        className="flex w-full items-center justify-between gap-3 rounded-full border border-white/40 bg-white/90 px-6 py-4 text-left text-base text-brand-navy shadow-lg backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-brand-blue/30 sm:px-7 sm:py-5 sm:text-lg"
+        className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-full border border-white/40 bg-white/90 px-6 py-4 text-left text-base text-brand-navy shadow-lg backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-brand-blue/30 sm:px-7 sm:py-5 sm:text-lg"
       >
         <span className={selecionada ? 'font-medium' : 'text-gray-500'}>
           {selecionada ? selecionada.label : placeholder}
@@ -66,7 +66,7 @@ export function SeletorOpcao({
                   onSelecionar(opcao.id);
                   setAberto(false);
                 }}
-                className="w-full px-6 py-3 text-left text-base text-gray-700 hover:bg-brand-bg/80 sm:text-lg"
+                className="w-full cursor-pointer px-6 py-3 text-left text-base text-gray-700 hover:bg-brand-bg/80 sm:text-lg"
               >
                 {opcao.label}
               </button>
