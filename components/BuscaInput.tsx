@@ -7,9 +7,12 @@ import type { Especialidade } from '@/types/database';
 export function BuscaInput({
   termoInicial = '',
   tamanho = 'grande',
+  parametrosExtras = {},
 }: {
   termoInicial?: string;
   tamanho?: 'grande' | 'compacto';
+  /** Parâmetros do funil (rede, operadora, cidade) a repassar pra página de resultados. */
+  parametrosExtras?: Record<string, string>;
 }) {
   const [termo, setTermo] = useState(termoInicial);
   const [sugestoes, setSugestoes] = useState<Especialidade[]>([]);
@@ -55,7 +58,8 @@ export function BuscaInput({
 
   function irParaEspecialidade(nome: string) {
     setAberto(false);
-    router.push(`/busca?especialidade=${encodeURIComponent(nome)}`);
+    const params = new URLSearchParams({ especialidade: nome, ...parametrosExtras });
+    router.push(`/busca?${params.toString()}`);
   }
 
   function buscar(e: React.FormEvent) {
@@ -98,7 +102,7 @@ export function BuscaInput({
           placeholder="Busque por especialidade, ex: pediatra, coração, olhos..."
           autoComplete="off"
           className={`w-full rounded-full border border-white/40 bg-white/90 text-brand-navy placeholder:text-gray-500 backdrop-blur-md focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/30 ${
-            grande ? 'px-5 py-3.5 text-base' : 'px-4 py-2.5 text-sm'
+            grande ? 'px-5 py-3.5 text-sm sm:text-base' : 'px-4 py-2.5 text-sm'
           }`}
           autoFocus={grande}
         />

@@ -14,11 +14,17 @@ export default async function ProfissionalPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ voltar?: string }>;
+  searchParams: Promise<{ voltar?: string; rede?: string; operadora?: string; cidade?: string }>;
 }) {
   const { id } = await params;
-  const { voltar } = await searchParams;
-  const hrefVoltar = voltar ? `/busca?especialidade=${encodeURIComponent(voltar)}` : '/busca';
+  const { voltar, rede, operadora, cidade } = await searchParams;
+  const paramsVoltar = new URLSearchParams();
+  if (rede) paramsVoltar.set('rede', rede);
+  if (operadora) paramsVoltar.set('operadora', operadora);
+  if (cidade) paramsVoltar.set('cidade', cidade);
+  if (voltar) paramsVoltar.set('especialidade', voltar);
+  const queryVoltar = paramsVoltar.toString();
+  const hrefVoltar = `/busca${queryVoltar ? `?${queryVoltar}` : ''}`;
   const supabase = await createClient();
 
   const { data: profissional } = await supabase

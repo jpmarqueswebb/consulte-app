@@ -8,14 +8,18 @@ import { MapaEmbed } from './MapaEmbed';
 export function ProfissionalCard({
   profissional,
   termoBusca,
+  parametrosExtras = {},
 }: {
   profissional: ProfissionalComVinculos;
   termoBusca?: string;
+  /** Parâmetros do funil (rede, operadora, cidade) a preservar ao ir e voltar da ficha. */
+  parametrosExtras?: Record<string, string>;
 }) {
   const local = profissional.locais[0];
-  const href = termoBusca
-    ? `/profissional/${profissional.id}?voltar=${encodeURIComponent(termoBusca)}`
-    : `/profissional/${profissional.id}`;
+  const params = new URLSearchParams(parametrosExtras);
+  if (termoBusca) params.set('voltar', termoBusca);
+  const query = params.toString();
+  const href = `/profissional/${profissional.id}${query ? `?${query}` : ''}`;
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

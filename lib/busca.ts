@@ -16,14 +16,23 @@ interface ResultadoBusca {
   profissionais: ProfissionalComVinculos[];
 }
 
+interface FiltrosBusca {
+  /** Nome/UF da cidade escolhida no funil (página 4) — vem da tabela `cidades`. */
+  cidade?: { nome: string; uf: string };
+  /** Nome da operadora escolhida no funil (página 3) — bate com `profissionais.operadora`. */
+  operadora?: string;
+}
+
 /**
  * Busca especialidade por termo livre: primeiro tenta os sinônimos,
  * depois o nome normalizado direto. Retorna os profissionais ativos
- * vinculados, com especialidades e locais de atendimento.
+ * vinculados, com especialidades e locais de atendimento, já filtrados
+ * pela cidade/operadora escolhidas no funil de entrada (quando informadas).
  */
 export async function buscarPorTermo(
   supabase: SupabaseClient<Database>,
-  termoBusca: string
+  termoBusca: string,
+  filtros: FiltrosBusca = {}
 ): Promise<ResultadoBusca> {
   const termo = normalizarTermo(termoBusca);
 
@@ -92,7 +101,31 @@ export async function buscarPorTermo(
     };
   });
 
-  return { especialidade, profissionais };
+  let profissionaisFiltrados = profissionais;
+
+  if (filtros.operadora) {
+    const operadoraAlvo = filtros.operadora.trim().toLowerCase();
+    profissionaisFiltrados = profissionaisFiltrados.filter(
+      (p) => p.operadora?.trim().toLowerCase() === operadoraAlvo
+    );
+  }
+
+  if (filtros.cidade) {
+    const { data: cidade } = await supabase
+      .from('cidades')
+      .select('id')
+      .ilike('nome', filtros.cidade.nome)
+      .ilike('uf', filtros.cidade.uf)
+      .maybeSingle();
+
+    if (cidade) {
+      profissionaisFiltrados = profissionaisFiltrados.filter((p) =>
+        p.locais.some((l) => l.cidade_id === cidade.id)
+      );
+    }
+  }
+
+  return { especialidade, profissionais: profissionaisFiltrados };
 }
 
 /**
