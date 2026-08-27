@@ -22,9 +22,13 @@ function CidadeConteudo() {
     router.push(`/pesquisar?${params.toString()}`);
   }
 
+  const paramsVoltar = new URLSearchParams();
+  if (rede) paramsVoltar.set('rede', rede);
+  const hrefVoltar = `/plano${paramsVoltar.toString() ? `?${paramsVoltar.toString()}` : ''}`;
+
   return (
-    <FundoHero>
-      <h1 className="text-3xl font-bold text-white sm:text-5xl">Qual a sua cidade:</h1>
+    <FundoHero hrefVoltar={hrefVoltar}>
+      <h1 className="text-3xl font-bold text-white sm:text-5xl">Perfeito, e qual a sua cidade?</h1>
 
       <div className="mt-10 flex justify-center">
         <SeletorOpcao

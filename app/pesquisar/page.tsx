@@ -12,8 +12,13 @@ export default async function PesquisarPage({
   if (operadora) parametrosExtras.operadora = operadora;
   if (cidade) parametrosExtras.cidade = cidade;
 
+  const paramsVoltar = new URLSearchParams();
+  if (rede) paramsVoltar.set('rede', rede);
+  if (operadora) paramsVoltar.set('operadora', operadora);
+  const hrefVoltar = `/cidade${paramsVoltar.toString() ? `?${paramsVoltar.toString()}` : ''}`;
+
   return (
-    <FundoHero>
+    <FundoHero hrefVoltar={hrefVoltar}>
       <div className="flex flex-col items-center gap-4 text-center">
         <h1 className="text-3xl font-bold text-white sm:whitespace-nowrap sm:text-5xl">
           Ache um médico

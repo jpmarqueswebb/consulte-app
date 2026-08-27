@@ -80,3 +80,30 @@ h6 {
     left: 100%;
   }
 }
+
+/* Pulso contínuo dos botões de call-to-action do funil (páginas 1 a 4). */
+.efeito-pulso {
+  animation: efeito-pulso-respiracao 2.2s ease-in-out infinite;
+}
+
+@keyframes efeito-pulso-respiracao {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.045);
+  }
+}
+
+/* Botão desabilitado não deve parecer clicável — para o pulso e o reflexo
+   (o reflexo roda no ::before, que "disabled:" do Tailwind não alcança). */
+.efeito-pulso:disabled {
+  animation: none;
+}
+
+.efeito-brilho:disabled::before {
+  animation: none;
+  opacity: 0;
+}

@@ -21,8 +21,8 @@ function PlanoConteudo() {
   }
 
   return (
-    <FundoHero>
-      <h1 className="text-3xl font-bold text-white sm:text-5xl">Qual é o seu plano?</h1>
+    <FundoHero hrefVoltar="/rede">
+      <h1 className="text-3xl font-bold text-white sm:text-5xl">Ótimo, agora me diga, qual o seu plano?</h1>
 
       <div className="mt-10 flex justify-center">
         <SeletorOpcao
