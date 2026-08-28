@@ -22,14 +22,18 @@ function PlanoConteudo() {
 
   return (
     <FundoHero hrefVoltar="/rede">
-      <h1 className="text-3xl font-bold text-white sm:text-5xl">Ótimo, agora me diga, qual o seu plano?</h1>
+      <div className="mx-auto w-fit max-w-full">
+        <h1 className="text-3xl font-bold text-white sm:whitespace-nowrap sm:text-4xl">
+          Ótimo, agora me diga, qual o seu plano?
+        </h1>
 
-      <div className="mt-10 flex justify-center">
-        <SeletorOpcao
-          opcoes={OPERADORAS.map((o) => ({ id: o.id, label: o.nome }))}
-          valor={operadoraId}
-          onSelecionar={setOperadoraId}
-        />
+        <div className="mt-10">
+          <SeletorOpcao
+            opcoes={OPERADORAS.map((o) => ({ id: o.id, label: o.nome }))}
+            valor={operadoraId}
+            onSelecionar={setOperadoraId}
+          />
+        </div>
       </div>
 
       <div className="mt-8 flex justify-center">

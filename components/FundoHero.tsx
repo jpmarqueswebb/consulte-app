@@ -29,22 +29,21 @@ export function FundoHero({
         <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/10 via-brand-navy/20 to-brand-navy/60" />
         <ShaderBackground className="absolute inset-0 hidden mix-blend-screen opacity-40 md:block" />
 
-        {hrefVoltar && (
-          <div className="absolute inset-x-4 top-[46px] z-20 sm:top-[104px]">
-            <div className="mx-auto max-w-[960px]">
-              <BotaoVoltar href={hrefVoltar} />
+        <div className="absolute inset-x-4 top-[46px] z-20 sm:top-[92px]">
+          <div className="mx-auto grid max-w-[960px] grid-cols-3 items-center">
+            <div className="flex justify-start">{hrefVoltar && <BotaoVoltar href={hrefVoltar} />}</div>
+            <div className="hidden justify-center sm:flex">
+              <img src="/consulte.svg" alt="Consulte" className="h-32 w-auto" />
             </div>
+            <div />
           </div>
-        )}
-
-        <div className="relative z-10 flex w-full max-w-[960px] flex-col items-center">
-          <img
-            src="/consulte.svg"
-            alt="Consulte"
-            className="mb-6 h-10 w-auto sm:mb-8 sm:h-14"
-          />
-          {children}
         </div>
+
+        <div className="relative z-10 flex w-full max-w-[960px] justify-center sm:hidden">
+          <img src="/consulte.svg" alt="Consulte" className="mb-4 h-16 w-auto" />
+        </div>
+
+        <div className="relative z-10 w-full max-w-[960px]">{children}</div>
 
         <div className="absolute inset-x-0 bottom-2 z-10">
           <Footer variant="dark" />

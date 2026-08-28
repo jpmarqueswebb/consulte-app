@@ -28,14 +28,16 @@ function CidadeConteudo() {
 
   return (
     <FundoHero hrefVoltar={hrefVoltar}>
-      <h1 className="text-3xl font-bold text-white sm:text-5xl">Perfeito, e qual a sua cidade?</h1>
+      <div className="mx-auto w-fit max-w-full">
+        <h1 className="text-3xl font-bold text-white sm:text-5xl">Perfeito, e qual a sua cidade?</h1>
 
-      <div className="mt-10 flex justify-center">
-        <SeletorOpcao
-          opcoes={CIDADES.map((c) => ({ id: c.id, label: `${c.nome} / ${c.uf}` }))}
-          valor={cidadeId}
-          onSelecionar={setCidadeId}
-        />
+        <div className="mt-10">
+          <SeletorOpcao
+            opcoes={CIDADES.map((c) => ({ id: c.id, label: `${c.nome} / ${c.uf}` }))}
+            valor={cidadeId}
+            onSelecionar={setCidadeId}
+          />
+        </div>
       </div>
 
       <div className="mt-8 flex justify-center">

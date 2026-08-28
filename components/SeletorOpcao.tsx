@@ -34,7 +34,7 @@ export function SeletorOpcao({
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-md">
+    <div ref={containerRef} className="relative w-full">
       <button
         type="button"
         onClick={() => setAberto((v) => !v)}
