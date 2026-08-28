@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { rotuloConselho } from '@/lib/formatacao';
 import { MapaEmbed } from '@/components/MapaEmbed';
 import { BotaoLigar } from '@/components/BotaoLigar';
 import { BotaoWhatsApp } from '@/components/BotaoWhatsApp';
@@ -20,7 +21,7 @@ export default async function LocalPage({ params }: { params: Promise<{ id: stri
 
   const { data: vinculos } = await supabase
     .from('profissional_locais')
-    .select('telefone, whatsapp, whatsapp_valido, profissionais!inner(id, nome, crm, uf_crm, situacao)')
+    .select('telefone, whatsapp, whatsapp_valido, profissionais!inner(id, nome, crm, uf_crm, tipo, situacao)')
     .eq('local_id', id)
     .eq('profissionais.situacao', 'ativo');
 
@@ -62,9 +63,11 @@ export default async function LocalPage({ params }: { params: Promise<{ id: stri
                     className="rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm"
                   >
                     <span className="font-medium text-brand-navy">{prof.nome}</span>{' '}
-                    <span className="text-gray-500">
-                      CRM {prof.crm}/{prof.uf_crm}
-                    </span>
+                    {rotuloConselho(prof.tipo, prof.crm, prof.uf_crm) && (
+                      <span className="text-gray-500">
+                        {rotuloConselho(prof.tipo, prof.crm, prof.uf_crm)}
+                      </span>
+                    )}
                   </Link>
                 );
               })}

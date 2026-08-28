@@ -57,7 +57,7 @@ export function SeletorOpcao({
       </button>
 
       {aberto && (
-        <ul className="absolute z-10 mt-2 w-full overflow-hidden rounded-2xl border border-white/40 bg-white/95 shadow-xl backdrop-blur-md">
+        <ul className="absolute z-30 mt-2 max-h-[228px] w-full overflow-y-auto overscroll-contain rounded-2xl border border-white/40 bg-white shadow-2xl">
           {opcoes.map((opcao) => (
             <li key={opcao.id}>
               <button

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { buscarPorTermo } from '@/lib/busca';
-import { buscarPorId, CIDADES, OPERADORAS } from '@/lib/fluxo';
+import { buscarPorId, CIDADES, OPERADORAS, tipoDaRede } from '@/lib/fluxo';
 import { BuscaInput } from '@/components/BuscaInput';
 import { ProfissionalCard } from '@/components/ProfissionalCard';
 
@@ -14,12 +14,14 @@ export default async function BuscaPage({
 
   const cidadeSelecionada = buscarPorId(CIDADES, cidade);
   const operadoraSelecionada = buscarPorId(OPERADORAS, operadora);
+  const tipo = tipoDaRede(rede) ?? undefined;
 
   const supabase = await createClient();
   const { especialidade, profissionais } = termo
     ? await buscarPorTermo(supabase, termo, {
         cidade: cidadeSelecionada ? { nome: cidadeSelecionada.nome, uf: cidadeSelecionada.uf } : undefined,
         operadora: operadoraSelecionada?.nome,
+        tipo,
       })
     : { especialidade: null, profissionais: [] };
 
@@ -27,6 +29,7 @@ export default async function BuscaPage({
   if (rede) parametrosNovaBusca.set('rede', rede);
   if (operadora) parametrosNovaBusca.set('operadora', operadora);
   if (cidade) parametrosNovaBusca.set('cidade', cidade);
+  if (tipo) parametrosNovaBusca.set('tipo', tipo);
   const queryNovaBusca = parametrosNovaBusca.toString();
 
   return (
@@ -82,6 +85,7 @@ export default async function BuscaPage({
                     key={p.id}
                     profissional={p}
                     termoBusca={termo}
+                    especialidadeBusca={especialidade.nome_normalizado}
                     parametrosExtras={Object.fromEntries(parametrosNovaBusca)}
                   />
                 ))}

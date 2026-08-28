@@ -1,5 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database, Especialidade, ProfissionalComVinculos } from '@/types/database';
+import type {
+  Database,
+  Especialidade,
+  ProfissionalComVinculos,
+  TipoProfissional,
+} from '@/types/database';
 
 /** Normaliza um termo de busca: minúsculas, sem acento, espaços colapsados. */
 export function normalizarTermo(termo: string): string {
@@ -21,13 +26,56 @@ interface FiltrosBusca {
   cidade?: { nome: string; uf: string };
   /** Nome da operadora escolhida no funil (página 3) — bate com `profissionais.operadora`. */
   operadora?: string;
+  /** Rede escolhida na página 2 → só retorna especialidade/profissionais desse tipo. */
+  tipo?: TipoProfissional;
 }
 
 /**
- * Busca especialidade por termo livre: primeiro tenta os sinônimos,
- * depois o nome normalizado direto. Retorna os profissionais ativos
- * vinculados, com especialidades e locais de atendimento, já filtrados
- * pela cidade/operadora escolhidas no funil de entrada (quando informadas).
+ * Resolve o termo numa especialidade, respeitando o tipo (médico/dentista) da
+ * rede escolhida no funil, em três tentativas:
+ *   1. match exato pelo nome_normalizado — caminho do seletor da tela de pesquisa,
+ *      que manda o nome exatamente como está no banco;
+ *   2. sinônimo leigo ("canal", "aparelho", "coração"...), filtrado por tipo;
+ *   3. nome normalizado sem acento comparado em memória — pega "clinica geral" →
+ *      "Clínica Geral" e os nomes compostos com acento.
+ */
+async function resolverEspecialidade(
+  supabase: SupabaseClient<Database>,
+  termoBusca: string,
+  termo: string,
+  tipo?: TipoProfissional
+): Promise<Especialidade | null> {
+  {
+    let q = supabase.from('especialidades').select('*').ilike('nome_normalizado', termoBusca.trim());
+    if (tipo) q = q.eq('tipo', tipo);
+    const { data } = await q.maybeSingle();
+    if (data) return data;
+  }
+
+  {
+    let q = supabase
+      .from('especialidade_sinonimos')
+      .select('especialidades!inner(id, nome_normalizado, tipo, created_at)')
+      .ilike('termo', termo);
+    if (tipo) q = q.eq('especialidades.tipo', tipo);
+    const { data } = await q.limit(1).maybeSingle();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const esp = (data as any)?.especialidades as Especialidade | undefined;
+    if (esp) return esp;
+  }
+
+  {
+    let q = supabase.from('especialidades').select('*');
+    if (tipo) q = q.eq('tipo', tipo);
+    const { data } = await q;
+    return (data ?? []).find((e) => normalizarTermo(e.nome_normalizado) === termo) ?? null;
+  }
+}
+
+/**
+ * Busca especialidade por termo livre (ou nome exato vindo do seletor) e retorna
+ * os profissionais ativos vinculados, com especialidades e locais de atendimento,
+ * já filtrados pela rede/cidade/operadora escolhidas no funil (quando informadas).
  */
 export async function buscarPorTermo(
   supabase: SupabaseClient<Database>,
@@ -40,49 +88,32 @@ export async function buscarPorTermo(
     return { especialidade: null, profissionais: [] };
   }
 
-  let especialidadeId: string | null = null;
-  let especialidade: Especialidade | null = null;
+  const especialidade = await resolverEspecialidade(supabase, termoBusca, termo, filtros.tipo);
 
-  const { data: sinonimo } = await supabase
-    .from('especialidade_sinonimos')
-    .select('especialidade_id, especialidades(id, nome_normalizado, created_at)')
-    .ilike('termo', termo)
-    .maybeSingle();
-
-  if (sinonimo) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const s = sinonimo as any;
-    especialidadeId = s.especialidade_id;
-    especialidade = s.especialidades;
-  } else {
-    const { data: direta } = await supabase
-      .from('especialidades')
-      .select('*')
-      .ilike('nome_normalizado', termo)
-      .maybeSingle();
-
-    if (direta) {
-      especialidadeId = direta.id;
-      especialidade = direta;
-    }
-  }
-
-  if (!especialidadeId) {
+  if (!especialidade) {
     return { especialidade: null, profissionais: [] };
   }
 
-  const { data: vinculos } = await supabase
+  const especialidadeId = especialidade.id;
+
+  let vinculosQuery = supabase
     .from('profissional_especialidades')
     .select(
       `profissional_id,
        profissionais!inner (
-         id, corretora_id, nome, crm, uf_crm, situacao, situacao_observacao, operadora, created_at, updated_at,
-         profissional_especialidades ( especialidades ( id, nome_normalizado, created_at ) ),
+         id, corretora_id, nome, crm, uf_crm, tipo, situacao, situacao_observacao, operadora, created_at, updated_at,
+         profissional_especialidades ( especialidades ( id, nome_normalizado, tipo, created_at ) ),
          profissional_locais ( telefone, whatsapp, whatsapp_valido, locais ( * ) )
        )`
     )
     .eq('especialidade_id', especialidadeId)
     .eq('profissionais.situacao', 'ativo');
+
+  if (filtros.tipo) {
+    vinculosQuery = vinculosQuery.eq('profissionais.tipo', filtros.tipo);
+  }
+
+  const { data: vinculos } = await vinculosQuery;
 
   const profissionais: ProfissionalComVinculos[] = (vinculos ?? []).map((v) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -137,19 +168,29 @@ export async function buscarPorTermo(
 export async function sugerirEspecialidades(
   supabase: SupabaseClient<Database>,
   termoBusca: string,
-  limite = 6
+  limite = 6,
+  tipo?: TipoProfissional
 ): Promise<Especialidade[]> {
   const termo = normalizarTermo(termoBusca);
   if (!termo) return [];
 
-  const [{ data: porSinonimo }, { data: porNome }] = await Promise.all([
-    supabase
-      .from('especialidade_sinonimos')
-      .select('especialidades(id, nome_normalizado, created_at)')
-      .ilike('termo', `${termo}%`)
-      .limit(limite),
-    supabase.from('especialidades').select('*').ilike('nome_normalizado', `${termo}%`).limit(limite),
-  ]);
+  let sinonimoQuery = supabase
+    .from('especialidade_sinonimos')
+    .select('especialidades!inner(id, nome_normalizado, tipo, created_at)')
+    .ilike('termo', `${termo}%`)
+    .limit(limite);
+  let nomeQuery = supabase
+    .from('especialidades')
+    .select('*')
+    .ilike('nome_normalizado', `${termo}%`)
+    .limit(limite);
+
+  if (tipo) {
+    sinonimoQuery = sinonimoQuery.eq('especialidades.tipo', tipo);
+    nomeQuery = nomeQuery.eq('tipo', tipo);
+  }
+
+  const [{ data: porSinonimo }, { data: porNome }] = await Promise.all([sinonimoQuery, nomeQuery]);
 
   const vistas = new Map<string, Especialidade>();
   for (const row of porNome ?? []) {

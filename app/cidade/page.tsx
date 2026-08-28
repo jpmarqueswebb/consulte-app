@@ -1,10 +1,10 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { FundoHero } from '@/components/FundoHero';
 import { SeletorOpcao } from '@/components/SeletorOpcao';
-import { BOTAO_FUNIL_CONTINUAR_CLASSES, CIDADES } from '@/lib/fluxo';
+import { BOTAO_FUNIL_CONTINUAR_CLASSES, cidadesDaRede } from '@/lib/fluxo';
 
 function CidadeConteudo() {
   const router = useRouter();
@@ -12,6 +12,13 @@ function CidadeConteudo() {
   const rede = searchParams.get('rede') ?? '';
   const operadora = searchParams.get('operadora') ?? '';
   const [cidadeId, setCidadeId] = useState<string | null>(null);
+
+  const cidades = cidadesDaRede(rede);
+
+  // Sem rede válida não dá pra saber quais cidades oferecer — volta pro início do funil.
+  useEffect(() => {
+    if (cidades.length === 0) router.replace('/rede');
+  }, [cidades.length, router]);
 
   function continuar() {
     if (!cidadeId) return;
@@ -33,7 +40,7 @@ function CidadeConteudo() {
 
         <div className="mt-10">
           <SeletorOpcao
-            opcoes={CIDADES.map((c) => ({ id: c.id, label: `${c.nome} / ${c.uf}` }))}
+            opcoes={cidades.map((c) => ({ id: c.id, label: `${c.nome} / ${c.uf}` }))}
             valor={cidadeId}
             onSelecionar={setCidadeId}
           />

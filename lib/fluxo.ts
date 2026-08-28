@@ -1,14 +1,28 @@
+import type { TipoProfissional } from '@/types/database';
+
 export type OpcaoFluxo = { id: string; nome: string };
 export type OpcaoCidade = OpcaoFluxo & { uf: string };
 
 /**
- * Redes credenciadas exibidas na página 2. Só decorativo por enquanto — não
- * filtra a busca — mas ao adicionar uma nova rede aqui ela já aparece na tela.
+ * Redes credenciadas exibidas na página 2. A escolha aqui segmenta todo o resto
+ * do funil (ver REDE_TIPO): rede de saúde só mostra médicos, rede odontológica
+ * só mostra dentistas — da busca até a ficha.
  */
 export const REDES: OpcaoFluxo[] = [
   { id: 'saude', nome: 'Saúde' },
   { id: 'odontologico', nome: 'Odontológico' },
 ];
+
+/** Rede escolhida na página 2 → tipo de profissional que a busca deve retornar. */
+export const REDE_TIPO: Record<string, TipoProfissional> = {
+  saude: 'medico',
+  odontologico: 'dentista',
+};
+
+/** Tipo de profissional da rede escolhida no funil, ou null se a rede for inválida/ausente. */
+export function tipoDaRede(redeId: string | undefined): TipoProfissional | null {
+  return redeId ? (REDE_TIPO[redeId] ?? null) : null;
+}
 
 /**
  * Operadoras/seguradoras exibidas na página 3. Adicionar novas aqui quando
@@ -17,12 +31,30 @@ export const REDES: OpcaoFluxo[] = [
  */
 export const OPERADORAS: OpcaoFluxo[] = [{ id: 'amil', nome: 'Amil' }];
 
+const ITABIRITO: OpcaoCidade = { id: 'itabirito-mg', nome: 'Itabirito', uf: 'MG' };
+const SETE_LAGOAS: OpcaoCidade = { id: 'sete-lagoas-mg', nome: 'Sete Lagoas', uf: 'MG' };
+
 /**
- * Cidades atendidas, exibidas na página 4. Adicionar novas aqui quando
- * expandirmos de área — nome/uf precisam bater com a tabela `cidades` no
- * banco, pois é usado para filtrar a busca pelos locais de atendimento.
+ * Todas as cidades já atendidas (união de todas as redes) — usada em /busca e na
+ * ficha só pra resolver id → nome/uf. nome/uf precisam bater com a tabela
+ * `cidades` no banco.
  */
-export const CIDADES: OpcaoCidade[] = [{ id: 'itabirito-mg', nome: 'Itabirito', uf: 'MG' }];
+export const CIDADES: OpcaoCidade[] = [ITABIRITO, SETE_LAGOAS];
+
+/**
+ * Cidades oferecidas na página 4 conforme a rede escolhida. A rede de saúde
+ * (COMEDI) só tem Itabirito; a rede odontológica da Amil cobre Itabirito e Sete
+ * Lagoas. Ao expandir, é só acrescentar aqui.
+ */
+export const CIDADES_POR_REDE: Record<string, OpcaoCidade[]> = {
+  saude: [ITABIRITO],
+  odontologico: [ITABIRITO, SETE_LAGOAS],
+};
+
+/** Cidades a exibir na página 4 para a rede escolhida (vazio se a rede for inválida). */
+export function cidadesDaRede(redeId: string | undefined): OpcaoCidade[] {
+  return redeId ? (CIDADES_POR_REDE[redeId] ?? []) : [];
+}
 
 export function buscarPorId<T extends OpcaoFluxo>(lista: T[], id: string | undefined): T | undefined {
   return lista.find((item) => item.id === id);

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { tipoDaRede } from '@/lib/fluxo';
+import { rotuloConselho } from '@/lib/formatacao';
 import { AvatarPlaceholder } from '@/components/AvatarPlaceholder';
 import { AvaliacoesPlaceholder } from '@/components/AvaliacoesPlaceholder';
 import { QuemIndica } from '@/components/QuemIndica';
@@ -45,6 +47,12 @@ export default async function ProfissionalPage({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const p = profissional as any;
+
+  // Se veio pelo funil (rede na URL), a ficha tem que ser do tipo daquela rede.
+  const tipoEsperado = tipoDaRede(rede);
+  if (tipoEsperado && p.tipo !== tipoEsperado) {
+    notFound();
+  }
   const especialidades = p.profissional_especialidades.map(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (pe: any) => pe.especialidades.nome_normalizado as string
@@ -60,9 +68,9 @@ export default async function ProfissionalPage({
         <div className="mt-4 flex flex-col items-start text-left">
           <AvatarPlaceholder nome={p.nome} size={96} />
           <h1 className="mt-3 text-xl font-bold text-brand-navy">{p.nome}</h1>
-          <p className="text-sm text-gray-500">
-            CRM {p.crm}/{p.uf_crm}
-          </p>
+          {rotuloConselho(p.tipo, p.crm, p.uf_crm) && (
+            <p className="text-sm text-gray-500">{rotuloConselho(p.tipo, p.crm, p.uf_crm)}</p>
+          )}
           <div className="mt-3 flex flex-wrap justify-start gap-1.5 rounded-lg bg-brand-bg px-3 py-2">
             {especialidades.map((nome: string) => (
               <span

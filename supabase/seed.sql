@@ -173,3 +173,74 @@ from (values
   ('Fisiatria', 'reabilitacao')
 ) as s(nome_normalizado, termo)
 join esp on esp.nome_normalizado = s.nome_normalizado;
+
+-- Especialidades odontológicas (as 15 categorias da rede credenciada Amil) --------
+insert into especialidades (nome_normalizado, tipo) values
+  ('Clínica Geral', 'dentista'),
+  ('Cirurgia', 'dentista'),
+  ('Endodontia', 'dentista'),
+  ('Prótese Dentária', 'dentista'),
+  ('Odontologia Estética', 'dentista'),
+  ('Ortodontia', 'dentista'),
+  ('Periodontia', 'dentista'),
+  ('Implantodontia', 'dentista'),
+  ('Odontopediatria', 'dentista'),
+  ('Odontogeriatria', 'dentista'),
+  ('Estomatologia', 'dentista'),
+  ('Radiologia Odontológica e Imaginologia', 'dentista'),
+  ('Disfunção Temporomandibular e Dor Orofacial', 'dentista'),
+  ('Odontologia para Pacientes com Necessidades Especiais', 'dentista'),
+  ('Urgência em Consultório Agendada', 'dentista')
+on conflict (nome_normalizado) do nothing;
+
+-- Sinônimos leigos das especialidades odontológicas -----------------------------
+with esp as (select id, nome_normalizado from especialidades where tipo = 'dentista')
+insert into especialidade_sinonimos (especialidade_id, termo)
+select esp.id, s.termo
+from (values
+  ('Endodontia', 'canal'),
+  ('Endodontia', 'tratamento de canal'),
+  ('Endodontia', 'dor no dente'),
+  ('Ortodontia', 'aparelho'),
+  ('Ortodontia', 'aparelho nos dentes'),
+  ('Ortodontia', 'aparelho dentario'),
+  ('Ortodontia', 'dente torto'),
+  ('Implantodontia', 'implante'),
+  ('Implantodontia', 'implante dentario'),
+  ('Prótese Dentária', 'protese'),
+  ('Prótese Dentária', 'protese dentaria'),
+  ('Prótese Dentária', 'dentadura'),
+  ('Prótese Dentária', 'ponte movel'),
+  ('Prótese Dentária', 'dente postico'),
+  ('Periodontia', 'gengiva'),
+  ('Periodontia', 'sangramento na gengiva'),
+  ('Periodontia', 'limpeza'),
+  ('Periodontia', 'tartaro'),
+  ('Odontologia Estética', 'clareamento'),
+  ('Odontologia Estética', 'clareamento dental'),
+  ('Odontologia Estética', 'lente de contato dental'),
+  ('Odontologia Estética', 'faceta'),
+  ('Cirurgia', 'extracao'),
+  ('Cirurgia', 'extracao de dente'),
+  ('Cirurgia', 'arrancar dente'),
+  ('Cirurgia', 'siso'),
+  ('Cirurgia', 'dente do siso'),
+  ('Odontopediatria', 'dentista de crianca'),
+  ('Odontopediatria', 'dentista infantil'),
+  ('Radiologia Odontológica e Imaginologia', 'raio x do dente'),
+  ('Radiologia Odontológica e Imaginologia', 'radiografia odontologica'),
+  ('Radiologia Odontológica e Imaginologia', 'panoramica'),
+  ('Clínica Geral', 'dentista'),
+  ('Clínica Geral', 'dentista clinico geral'),
+  ('Clínica Geral', 'carie'),
+  ('Clínica Geral', 'obturacao'),
+  ('Clínica Geral', 'restauracao'),
+  ('Estomatologia', 'lesao na boca'),
+  ('Estomatologia', 'ferida na boca'),
+  ('Disfunção Temporomandibular e Dor Orofacial', 'dtm'),
+  ('Disfunção Temporomandibular e Dor Orofacial', 'dor na mandibula'),
+  ('Disfunção Temporomandibular e Dor Orofacial', 'bruxismo'),
+  ('Disfunção Temporomandibular e Dor Orofacial', 'range os dentes')
+) as s(nome_normalizado, termo)
+join esp on esp.nome_normalizado = s.nome_normalizado
+on conflict (termo) do nothing;

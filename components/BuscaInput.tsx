@@ -8,11 +8,13 @@ export function BuscaInput({
   termoInicial = '',
   tamanho = 'grande',
   parametrosExtras = {},
+  placeholder = 'Busque por especialidade, ex: pediatra, coração, olhos...',
 }: {
   termoInicial?: string;
   tamanho?: 'grande' | 'compacto';
-  /** Parâmetros do funil (rede, operadora, cidade) a repassar pra página de resultados. */
+  /** Parâmetros do funil (rede, operadora, cidade, tipo) a repassar pra página de resultados. */
   parametrosExtras?: Record<string, string>;
+  placeholder?: string;
 }) {
   const [termo, setTermo] = useState(termoInicial);
   const [sugestoes, setSugestoes] = useState<Especialidade[]>([]);
@@ -29,7 +31,8 @@ export function BuscaInput({
         return;
       }
       try {
-        const res = await fetch(`/api/sugestoes?q=${encodeURIComponent(termo)}`, {
+        const tipoQs = parametrosExtras.tipo ? `&tipo=${encodeURIComponent(parametrosExtras.tipo)}` : '';
+        const res = await fetch(`/api/sugestoes?q=${encodeURIComponent(termo)}${tipoQs}`, {
           signal: controller.signal,
         });
         const data = await res.json();
@@ -44,7 +47,7 @@ export function BuscaInput({
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [termo]);
+  }, [termo, parametrosExtras.tipo]);
 
   useEffect(() => {
     function aoClicarFora(e: MouseEvent) {
@@ -99,7 +102,7 @@ export function BuscaInput({
           }}
           onFocus={() => setAberto(true)}
           onKeyDown={aoTeclar}
-          placeholder="Busque por especialidade, ex: pediatra, coração, olhos..."
+          placeholder={placeholder}
           autoComplete="off"
           className={`w-full rounded-full border border-white/40 bg-white/90 text-brand-navy placeholder:text-gray-500 backdrop-blur-md focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/30 ${
             grande ? 'px-5 py-3.5 text-sm sm:text-base' : 'px-4 py-2.5 text-sm'
@@ -109,7 +112,7 @@ export function BuscaInput({
         <button
           type="submit"
           className={`efeito-brilho shrink-0 cursor-pointer rounded-full bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-navy font-semibold text-white transition-colors hover:brightness-110 ${
-            grande ? 'px-5 py-3.5 text-sm sm:min-w-[260px] sm:px-8 sm:text-base' : 'px-5 py-2.5 text-sm'
+            grande ? 'px-5 py-3.5 text-sm sm:min-w-[130px] sm:px-6 sm:text-base' : 'px-5 py-2.5 text-sm'
           }`}
         >
           Buscar

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ProfissionalComVinculos } from '@/types/database';
+import { rotuloConselho } from '@/lib/formatacao';
 import { BotaoLigar } from './BotaoLigar';
 import { BotaoWhatsApp } from './BotaoWhatsApp';
 import { AvatarPlaceholder } from './AvatarPlaceholder';
@@ -8,14 +9,19 @@ import { MapaEmbed } from './MapaEmbed';
 export function ProfissionalCard({
   profissional,
   termoBusca,
+  especialidadeBusca,
   parametrosExtras = {},
 }: {
   profissional: ProfissionalComVinculos;
   termoBusca?: string;
+  /** Especialidade pesquisada — o card mostra só ela, não a lista inteira do profissional. */
+  especialidadeBusca?: string;
   /** Parâmetros do funil (rede, operadora, cidade) a preservar ao ir e voltar da ficha. */
   parametrosExtras?: Record<string, string>;
 }) {
   const local = profissional.locais[0];
+  const especialidadeExibida =
+    especialidadeBusca ?? profissional.especialidades.map((e) => e.nome_normalizado).join(', ');
   const params = new URLSearchParams(parametrosExtras);
   if (termoBusca) params.set('voltar', termoBusca);
   const query = params.toString();
@@ -27,22 +33,16 @@ export function ProfissionalCard({
         <div className="flex flex-col items-start text-left">
           <AvatarPlaceholder nome={profissional.nome} size={88} />
           <h3 className="mt-3 text-base font-semibold text-brand-navy">{profissional.nome}</h3>
-          <p className="text-sm text-gray-500">
-            CRM {profissional.crm}/{profissional.uf_crm}
-          </p>
+          {rotuloConselho(profissional.tipo, profissional.crm, profissional.uf_crm) && (
+            <p className="text-sm text-gray-500">
+              {rotuloConselho(profissional.tipo, profissional.crm, profissional.uf_crm)}
+            </p>
+          )}
         </div>
 
-        {(profissional.especialidades.length > 0 || local) && (
-          <div className="mt-3 flex w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg bg-brand-bg px-3 py-2 text-sm text-brand-navy">
-            <span className="font-medium">
-              {profissional.especialidades.map((e) => e.nome_normalizado).join(', ')}
-            </span>
-            {local && (
-              <>
-                <span className="text-brand-navy/40">•</span>
-                <span className="text-gray-600">{local.nome}</span>
-              </>
-            )}
+        {especialidadeExibida && (
+          <div className="mt-3 flex w-full items-center justify-center rounded-lg bg-brand-bg px-3 py-2 text-center text-sm font-medium text-brand-navy">
+            {especialidadeExibida}
           </div>
         )}
       </Link>

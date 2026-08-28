@@ -1,5 +1,8 @@
 export type Situacao = 'ativo' | 'inativo' | 'atende_apenas_em_outra_cidade';
 
+/** Rede a que o profissional/especialidade pertence — segmenta a busca (ver /rede). */
+export type TipoProfissional = 'medico' | 'dentista';
+
 export type Corretora = {
   id: string;
   nome: string;
@@ -25,6 +28,7 @@ export type Cidade = {
 export type Especialidade = {
   id: string;
   nome_normalizado: string;
+  tipo: TipoProfissional;
   created_at: string;
 };
 
@@ -55,8 +59,10 @@ export type Profissional = {
   id: string;
   corretora_id: string;
   nome: string;
-  crm: string;
+  /** Nº do conselho (CRM p/ médico, CRO p/ dentista). NULL para prestador PJ/clínica sem conselho. */
+  crm: string | null;
   uf_crm: string;
+  tipo: TipoProfissional;
   situacao: Situacao;
   situacao_observacao: string | null;
   operadora: string;
@@ -125,7 +131,7 @@ export type Database = {
       };
       profissionais: {
         Row: Profissional;
-        Insert: Partial<Profissional> & Pick<Profissional, 'corretora_id' | 'nome' | 'crm'>;
+        Insert: Partial<Profissional> & Pick<Profissional, 'corretora_id' | 'nome'>;
         Update: Partial<Profissional>;
         Relationships: [];
       };

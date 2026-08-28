@@ -31,6 +31,10 @@ create table cidades (
 create table especialidades (
   id uuid primary key default gen_random_uuid(),
   nome_normalizado text not null unique, -- ex: "Oftalmologia"
+  -- Rede a que a especialidade pertence — o seletor da tela de pesquisa lista só as
+  -- do tipo escolhido no funil. default só p/ cadastro inline do admin; a importação
+  -- em massa sempre informa explicitamente.
+  tipo text not null default 'medico' check (tipo in ('medico', 'dentista')),
   created_at timestamptz not null default now()
 );
 
@@ -66,16 +70,24 @@ create table profissionais (
   id uuid primary key default gen_random_uuid(),
   corretora_id uuid not null references corretoras(id),
   nome text not null,
-  crm text not null,
+  crm text, -- nº do conselho (CRM médico / CRO dentista). NULL p/ prestador PJ/clínica sem conselho.
   uf_crm text not null default 'MG',
+  -- Rede a que o profissional pertence — segmenta a busca (ver tela /rede). default só
+  -- p/ cadastro manual do admin; a importação em massa sempre informa explicitamente.
+  tipo text not null default 'medico' check (tipo in ('medico', 'dentista')),
   situacao text not null default 'ativo' check (situacao in ('ativo', 'inativo', 'atende_apenas_em_outra_cidade')),
   situacao_observacao text, -- texto livre, ex: "cooperada solicitou demissão" ou "atende só em BH"
   operadora text not null default 'Amil', -- campo simples fixo no MVP
   link_agendamento text, -- URL completa (Doctoralia ou outro), NULL = sem agendamento online
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
+  -- NULLs são distintos entre si, então múltiplos prestadores sem conselho não colidem aqui.
   unique (crm, uf_crm, corretora_id)
 );
+
+-- Sem conselho, a identidade do profissional é (corretora_id, nome).
+create unique index profissionais_sem_conselho_key
+  on profissionais (corretora_id, lower(nome)) where crm is null;
 
 -- Relação N:N profissional <-> especialidade
 create table profissional_especialidades (
@@ -96,10 +108,12 @@ create table profissional_locais (
 
 -- Índices de busca
 create index idx_profissionais_situacao on profissionais(situacao);
+create index idx_profissionais_tipo on profissionais(tipo);
 create index idx_locais_cidade on locais(cidade_id);
 create index idx_especialidade_sinonimos_termo on especialidade_sinonimos(termo);
 
 -- RLS (Row Level Security)
+alter table cidades enable row level security;
 alter table locais enable row level security;
 alter table profissionais enable row level security;
 alter table profissional_especialidades enable row level security;
@@ -107,6 +121,10 @@ alter table profissional_locais enable row level security;
 alter table admin_users enable row level security;
 alter table especialidades enable row level security;
 alter table especialidade_sinonimos enable row level security;
+
+-- Cidades são dados de referência 100% públicos (o filtro de cidade da busca depende disso).
+create policy "public read cidades" on cidades
+  for select using (true);
 
 -- Especialidades e sinônimos são globais e 100% públicos (a busca depende disso).
 create policy "public read especialidades" on especialidades
