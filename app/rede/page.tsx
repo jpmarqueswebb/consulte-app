@@ -16,10 +16,10 @@ export default function RedePage() {
 
   return (
     <FundoHero hrefVoltar="/">
-      <h1 className="text-4xl font-bold text-white sm:text-5xl">
+      <h1 className="text-4xl font-bold text-white sm:text-[clamp(2.25rem,3.75vw,3rem)] sm:leading-[1.1]">
         Escolha qual a sua rede credenciada:
       </h1>
-      <p className="mt-3 text-lg text-white/85 sm:text-xl">Escolha uma opção</p>
+      <p className="mt-3 text-lg text-white/85 sm:text-[clamp(1.125rem,1.6vw,1.25rem)]">Escolha uma opção</p>
 
       <div className="mt-10 flex flex-col items-center gap-7 sm:flex-row sm:justify-center sm:gap-8">
         {REDES.map((rede) => {

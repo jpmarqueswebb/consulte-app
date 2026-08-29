@@ -36,7 +36,9 @@ function CidadeConteudo() {
   return (
     <FundoHero hrefVoltar={hrefVoltar}>
       <div className="mx-auto w-fit max-w-full">
-        <h1 className="text-3xl font-bold text-white sm:text-5xl">Perfeito, e qual a sua cidade?</h1>
+        <h1 className="text-3xl font-bold text-white sm:text-[clamp(1.875rem,3.75vw,3rem)] sm:leading-[1.1]">
+          Perfeito, e qual a sua cidade?
+        </h1>
 
         <div className="mt-10">
           <SeletorOpcao

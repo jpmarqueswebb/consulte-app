@@ -33,14 +33,24 @@ export function FundoHero({
           <div className="mx-auto grid max-w-[960px] grid-cols-3 items-center">
             <div className="flex justify-start">{hrefVoltar && <BotaoVoltar href={hrefVoltar} />}</div>
             <div className="hidden justify-center sm:flex">
-              <img src="/consulte.svg" alt="Consulte" className="h-32 w-auto" />
+              {/* Altura em vh (com piso/teto) pra logo acompanhar a tela: encolhe
+                  em notebooks e telas menores, sem estourar em monitores grandes. */}
+              <img
+                src="/consulte.svg"
+                alt="Consulte"
+                className="h-[clamp(3.5rem,10vh,8rem)] w-auto"
+              />
             </div>
             <div />
           </div>
         </div>
 
         <div className="relative z-10 flex w-full max-w-[960px] justify-center sm:hidden">
-          <img src="/consulte.svg" alt="Consulte" className="mb-4 h-16 w-auto" />
+          <img
+            src="/consulte.svg"
+            alt="Consulte"
+            className="mb-3 h-[clamp(3rem,7.5vh,3.75rem)] w-auto"
+          />
         </div>
 
         <div className="relative z-10 w-full max-w-[960px]">{children}</div>

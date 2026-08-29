@@ -23,7 +23,7 @@ function PlanoConteudo() {
   return (
     <FundoHero hrefVoltar="/rede">
       <div className="mx-auto w-fit max-w-full">
-        <h1 className="text-3xl font-bold text-white sm:whitespace-nowrap sm:text-4xl">
+        <h1 className="text-3xl font-bold text-white sm:whitespace-nowrap sm:text-[clamp(1.875rem,2.8vw,2.25rem)] sm:leading-[1.15]">
           Ótimo, agora me diga, qual o seu plano?
         </h1>
 

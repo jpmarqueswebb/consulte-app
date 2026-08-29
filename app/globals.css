@@ -107,3 +107,20 @@ h6 {
   animation: none;
   opacity: 0;
 }
+
+/* Campos "select" do funil (páginas 3 a 5): padding e fonte fluidos, que
+   acompanham a largura da tela em vez de saltar só no breakpoint — assim
+   encolhem em notebooks/telas médias e nos extremos continuam iguais ao que já
+   existia (piso = tamanho mobile, teto = tamanho desktop, atingido por volta de
+   1280px de largura). */
+.campo-funil {
+  padding-inline: clamp(1.5rem, 2.2vw, 1.75rem);
+  padding-block: clamp(1rem, 1.7vw, 1.25rem);
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+}
+
+.campo-funil-opcao {
+  padding-inline: 1.5rem;
+  padding-block: 0.75rem;
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+}

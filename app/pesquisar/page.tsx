@@ -43,10 +43,10 @@ export default async function PesquisarPage({
   return (
     <FundoHero hrefVoltar={hrefVoltar}>
       <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-2 text-center">
-        <h1 className="text-3xl font-bold text-balance text-white sm:text-5xl">
+        <h1 className="text-3xl font-bold text-balance text-white sm:text-[clamp(1.875rem,3.75vw,3rem)] sm:leading-[1.1]">
           Pesquise pela especialidade ou pelo nome da pessoa
         </h1>
-        <p className="text-base text-pretty text-white/85 sm:text-xl">
+        <p className="text-base text-pretty text-white/85 sm:text-[clamp(1rem,1.6vw,1.25rem)]">
           {tipo === 'dentista'
             ? 'Rede odontológica credenciada Amil em Itabirito e Sete Lagoas.'
             : 'Rede credenciada Amil em Itabirito.'}{' '}
@@ -54,12 +54,12 @@ export default async function PesquisarPage({
         </p>
       </div>
 
-      <div className="mx-auto mt-6 flex w-full max-w-3xl flex-col items-stretch">
+      <div className="mx-auto mt-4 flex w-full max-w-3xl flex-col items-stretch sm:mt-6">
         <div className="rounded-full border border-white/15 bg-white/10 p-3 shadow-2xl backdrop-blur-xl">
           <BuscaInput parametrosExtras={parametrosExtras} placeholder={PLACEHOLDER[tipo]} />
         </div>
 
-        <div className="my-5 flex items-center gap-4 text-white/70">
+        <div className="my-4 flex items-center gap-4 text-white/70 sm:my-5">
           <span className="h-px flex-1 bg-white/25" />
           <span className="text-lg font-bold tracking-wide">OU</span>
           <span className="h-px flex-1 bg-white/25" />

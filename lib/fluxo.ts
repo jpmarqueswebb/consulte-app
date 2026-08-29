@@ -60,14 +60,18 @@ export function buscarPorId<T extends OpcaoFluxo>(lista: T[], id: string | undef
   return lista.find((item) => item.id === id);
 }
 
-/** Estilo do botão/CTA principal da página 1 do funil — grande, centralizado, responsivo, com pulso e reflexo contínuos. */
+/**
+ * Estilo do botão/CTA principal da página 1 do funil — grande, centralizado, responsivo, com pulso e reflexo contínuos.
+ * A partir do breakpoint `sm`, padding e fonte são fluidos (clamp): acompanham a largura da tela em vez de
+ * saltar pro tamanho de desktop e ficar grande demais em notebooks. Piso = tamanho mobile, teto = tamanho desktop.
+ */
 export const BOTAO_FUNIL_CLASSES =
-  'efeito-brilho efeito-pulso w-full max-w-sm cursor-pointer rounded-full bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-navy px-10 py-6 text-xl font-bold text-white shadow-2xl transition-all duration-200 enabled:hover:scale-105 enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:min-w-[420px] sm:px-14 sm:py-7 sm:text-2xl';
+  'efeito-brilho efeito-pulso w-full max-w-sm cursor-pointer rounded-full bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-navy px-10 py-6 text-xl font-bold text-white shadow-2xl transition-all duration-200 enabled:hover:scale-105 enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:min-w-[420px] sm:px-[clamp(2.5rem,4.4vw,3.5rem)] sm:py-[clamp(1.5rem,2.5vw,1.75rem)] sm:text-[clamp(1.25rem,1.9vw,1.5rem)]';
 
-/** Variante do botão do funil com texto mais longo ("CLIQUE PARA CONTINUAR") — usada nas páginas 2, 3 e 4, com pulso e reflexo contínuos (desligados automaticamente quando desabilitado, ver globals.css). Fonte menor e whitespace-nowrap pra caber numa linha só sem deixar o botão alto. */
+/** Variante do botão do funil com texto mais longo ("CLIQUE PARA CONTINUAR") — usada nas páginas 2, 3 e 4, com pulso e reflexo contínuos (desligados automaticamente quando desabilitado, ver globals.css). Fonte menor e whitespace-nowrap pra caber numa linha só sem deixar o botão alto. Padding/fonte fluidos do `sm` pra cima (ver BOTAO_FUNIL_CLASSES). */
 export const BOTAO_FUNIL_CONTINUAR_CLASSES =
-  'efeito-brilho efeito-pulso w-full max-w-sm cursor-pointer whitespace-nowrap rounded-full bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-navy px-8 py-4 text-sm font-bold text-white shadow-2xl transition-all duration-200 enabled:hover:scale-105 enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:min-w-[420px] sm:px-14 sm:py-5 sm:text-lg';
+  'efeito-brilho efeito-pulso w-full max-w-sm cursor-pointer whitespace-nowrap rounded-full bg-gradient-to-r from-brand-blue via-brand-blue-dark to-brand-navy px-8 py-4 text-sm font-bold text-white shadow-2xl transition-all duration-200 enabled:hover:scale-105 enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:min-w-[420px] sm:px-[clamp(2rem,4.4vw,3.5rem)] sm:py-[clamp(1rem,1.6vw,1.25rem)] sm:text-[clamp(0.875rem,1.5vw,1.125rem)]';
 
-/** Botão de opção selecionável (página 2, rede credenciada) — fundo branco, texto azul da marca, com bolinha de seleção à esquerda que preenche quando a opção está ativa. */
+/** Botão de opção selecionável (página 2, rede credenciada) — fundo branco, texto azul da marca, com bolinha de seleção à esquerda que preenche quando a opção está ativa. Padding/fonte fluidos do `sm` pra cima (ver BOTAO_FUNIL_CLASSES). */
 export const BOTAO_OPCAO_CLASSES =
-  'flex w-full max-w-sm cursor-pointer items-center gap-3 rounded-full bg-white px-7 py-5 text-lg font-bold text-[#004C83] shadow-2xl transition-all duration-200 hover:scale-105 sm:w-auto sm:min-w-[300px] sm:px-9 sm:py-6 sm:text-xl';
+  'flex w-full max-w-sm cursor-pointer items-center gap-3 rounded-full bg-white px-7 py-5 text-lg font-bold text-[#004C83] shadow-2xl transition-all duration-200 hover:scale-105 sm:w-auto sm:min-w-[300px] sm:px-[clamp(1.75rem,2.9vw,2.25rem)] sm:py-[clamp(1.25rem,2vw,1.5rem)] sm:text-[clamp(1.125rem,1.6vw,1.25rem)]';
