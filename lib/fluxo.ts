@@ -117,13 +117,53 @@ export const ESPECIALIDADES_CENTRO_OCUPACIONAL = [
 ];
 
 /**
+ * Especialidades/exames que o Consulte Benefícios cobre, corrigindo só erros
+ * de digitação óbvios do texto que a cliente passou (acentos e "Adbdome" /
+ * "Abdoem" → "Abdome") — mesmo esquema de lista fixa acima.
+ */
+export const ESPECIALIDADES_CONSULTE_BENEFICIOS = [
+  'Ecocardiograma / Ecodopplercardiograma',
+  'Audiometria / Aparelho Auditivo',
+  'Nutricionista',
+  'Psicologia',
+  'Consultas Médicas',
+  'Exames Laboratoriais',
+  'Análises Clínicas',
+  'Genética',
+  'Anatomia Patológica',
+  'Toxicológicos',
+  'Ultrassom Abdome Total',
+  'Ultrassom Rins e Vias Urinárias',
+  'Ultrassom Pélvico Masculino',
+  'Ultrassom Pélvico Feminino',
+  'Ultrassom Transvaginal',
+  'Ultrassom Doppler Arterial de Membros Inferiores/Superiores',
+  'Ultrassom Doppler Venoso de Membros Inferiores/Superiores',
+  'Ultrassom Doppler de Carótidas e Vertebrais',
+  'Ultrassom Doppler de Vasos Hepáticos',
+  'Ultrassom Doppler de Vasos Renais',
+  'Ultrassom Mapeamento Venoso (por membro)',
+  'Ultrassom Tireoide com Doppler',
+  'Ultrassom Cervical com Doppler',
+  'Ultrassom Doppler de Veia Cava Inferior',
+  'Ultrassom Abdome Superior',
+  'Ultrassom Bolsa Escrotal com Doppler',
+  'Ultrassom Bolsa Escrotal',
+  'Ultrassom Partes Moles',
+  'Ultrassom Cervical',
+  'Ultrassom Glândulas Salivares',
+  'Ultrassom Músculo e Articulações (por articulação)',
+];
+
+/**
  * Operadoras cuja lista de especialidades da página de pesquisa é fixa
- * (não vem do banco) — ver ESPECIALIDADES_TEM_SAUDE e
- * ESPECIALIDADES_CENTRO_OCUPACIONAL.
+ * (não vem do banco) — ver ESPECIALIDADES_TEM_SAUDE,
+ * ESPECIALIDADES_CENTRO_OCUPACIONAL e ESPECIALIDADES_CONSULTE_BENEFICIOS.
  */
 export const ESPECIALIDADES_POR_OPERADORA: Record<string, string[]> = {
   'tem-saude': ESPECIALIDADES_TEM_SAUDE,
   'centro-ocupacional': ESPECIALIDADES_CENTRO_OCUPACIONAL,
+  'consulte-beneficios': ESPECIALIDADES_CONSULTE_BENEFICIOS,
 };
 
 /** Operadoras a exibir na página 3 para a rede escolhida (vazio se a rede for inválida). */
@@ -153,13 +193,14 @@ export const CIDADES_POR_REDE: Record<string, OpcaoCidade[]> = {
 
 /**
  * Operadoras que restringem as cidades da página 4 a um subconjunto — Convênio
- * TEM Saúde e Centro Ocupacional atendem só Sete Lagoas, mesmo a rede de
- * saúde cobrindo Itabirito também. Quando a operadora não estiver aqui, usa
- * a lista normal da rede (CIDADES_POR_REDE).
+ * TEM Saúde, Centro Ocupacional e Consulte Benefícios atendem só Sete Lagoas,
+ * mesmo a rede de saúde cobrindo Itabirito também. Quando a operadora não
+ * estiver aqui, usa a lista normal da rede (CIDADES_POR_REDE).
  */
 export const CIDADES_POR_OPERADORA: Record<string, OpcaoCidade[]> = {
   'tem-saude': [SETE_LAGOAS],
   'centro-ocupacional': [SETE_LAGOAS],
+  'consulte-beneficios': [SETE_LAGOAS],
 };
 
 /** Cidades a exibir na página 4 para a rede escolhida (vazio se a rede for inválida). */
