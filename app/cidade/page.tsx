@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { FundoHero } from '@/components/FundoHero';
 import { SeletorOpcao } from '@/components/SeletorOpcao';
-import { BOTAO_FUNIL_CONTINUAR_CLASSES, cidadesDaRede } from '@/lib/fluxo';
+import { BOTAO_FUNIL_CONTINUAR_CLASSES, cidadesDoFunil } from '@/lib/fluxo';
 
 function CidadeConteudo() {
   const router = useRouter();
@@ -13,7 +13,7 @@ function CidadeConteudo() {
   const operadora = searchParams.get('operadora') ?? '';
   const [cidadeId, setCidadeId] = useState<string | null>(null);
 
-  const cidades = cidadesDaRede(rede);
+  const cidades = cidadesDoFunil(rede, operadora);
 
   // Sem rede válida não dá pra saber quais cidades oferecer — volta pro início do funil.
   useEffect(() => {

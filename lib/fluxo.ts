@@ -39,12 +39,14 @@ const AMIL: OpcaoFluxo = { id: 'amil', nome: 'Amil', label: 'Amil Saúde' };
 const AMIL_DENTAL: OpcaoFluxo = { id: 'amil-dental', nome: 'Amil', label: 'Amil Dental' };
 
 /**
- * Convênio TEM Saúde e Consulte Benefícios — ainda sem base de médicos
- * cadastrada no banco (ver ESPECIALIDADES_TEM_SAUDE). `nome` não bate com
- * nenhum `profissionais.operadora` de propósito: a busca não vai encontrar
- * ninguém até essa base existir, mas a opção já aparece no funil.
+ * Convênio TEM Saúde, Centro Ocupacional e Consulte Benefícios — ainda sem
+ * base de médicos cadastrada no banco (ver ESPECIALIDADES_TEM_SAUDE e
+ * ESPECIALIDADES_CENTRO_OCUPACIONAL). `nome` não bate com nenhum
+ * `profissionais.operadora` de propósito: a busca não vai encontrar ninguém
+ * até essa base existir, mas a opção já aparece no funil.
  */
 const TEM_SAUDE: OpcaoFluxo = { id: 'tem-saude', nome: 'Convênio TEM Saúde' };
+const CENTRO_OCUPACIONAL: OpcaoFluxo = { id: 'centro-ocupacional', nome: 'Centro Ocupacional' };
 const CONSULTE_BENEFICIOS: OpcaoFluxo = { id: 'consulte-beneficios', nome: 'Consulte Benefícios' };
 
 /**
@@ -52,15 +54,16 @@ const CONSULTE_BENEFICIOS: OpcaoFluxo = { id: 'consulte-beneficios', nome: 'Cons
  * usada em /busca só pra resolver id → nome. O nome precisa bater com o valor
  * salvo em `profissionais.operadora` no banco, pois é usado para filtrar a busca.
  */
-export const OPERADORAS: OpcaoFluxo[] = [AMIL, AMIL_DENTAL, TEM_SAUDE, CONSULTE_BENEFICIOS];
+export const OPERADORAS: OpcaoFluxo[] = [AMIL, AMIL_DENTAL, TEM_SAUDE, CENTRO_OCUPACIONAL, CONSULTE_BENEFICIOS];
 
 /**
  * Operadoras oferecidas na página 3 conforme a rede escolhida. A rede de
- * saúde usa Amil, Convênio TEM Saúde e Consulte Benefícios; a rede
- * odontológica usa a Amil Dental. Ao expandir, é só acrescentar aqui.
+ * saúde usa Amil, Convênio TEM Saúde, Centro Ocupacional e Consulte
+ * Benefícios (nessa ordem); a rede odontológica usa a Amil Dental. Ao
+ * expandir, é só acrescentar aqui.
  */
 export const OPERADORAS_POR_REDE: Record<string, OpcaoFluxo[]> = {
-  saude: [AMIL, TEM_SAUDE, CONSULTE_BENEFICIOS],
+  saude: [AMIL, TEM_SAUDE, CENTRO_OCUPACIONAL, CONSULTE_BENEFICIOS],
   odontologico: [AMIL_DENTAL],
 };
 
@@ -82,6 +85,46 @@ export const ESPECIALIDADES_TEM_SAUDE = [
   'Gastro',
   'Dermatologista',
 ];
+
+/**
+ * Especialidades que o Centro Ocupacional cobre, exatamente como a cliente
+ * passou (repetições removidas) — mesmo esquema de lista fixa acima.
+ */
+export const ESPECIALIDADES_CENTRO_OCUPACIONAL = [
+  'Alergista',
+  'Angiologia',
+  'Cardiologia',
+  'Cirurgia Geral',
+  'Clínico Geral',
+  'Dermatologia',
+  'Endocrinologia',
+  'Fonoaudiologia',
+  'Gastroenterologia',
+  'Ginecologia',
+  'Médico da Família',
+  'Nutricionista',
+  'Neuropsicologia',
+  'Neurologia',
+  'Oftalmologia',
+  'Ortopedia / Traumatologia',
+  'Otorrinolaringologia',
+  'Pediatria',
+  'Pneumologia',
+  'Psiquiatria',
+  'Psicologia',
+  'Psicanálise',
+  'Urologia',
+];
+
+/**
+ * Operadoras cuja lista de especialidades da página de pesquisa é fixa
+ * (não vem do banco) — ver ESPECIALIDADES_TEM_SAUDE e
+ * ESPECIALIDADES_CENTRO_OCUPACIONAL.
+ */
+export const ESPECIALIDADES_POR_OPERADORA: Record<string, string[]> = {
+  'tem-saude': ESPECIALIDADES_TEM_SAUDE,
+  'centro-ocupacional': ESPECIALIDADES_CENTRO_OCUPACIONAL,
+};
 
 /** Operadoras a exibir na página 3 para a rede escolhida (vazio se a rede for inválida). */
 export function operadorasDaRede(redeId: string | undefined): OpcaoFluxo[] {
@@ -108,9 +151,30 @@ export const CIDADES_POR_REDE: Record<string, OpcaoCidade[]> = {
   odontologico: [ITABIRITO, SETE_LAGOAS],
 };
 
+/**
+ * Operadoras que restringem as cidades da página 4 a um subconjunto — Convênio
+ * TEM Saúde e Centro Ocupacional atendem só Sete Lagoas, mesmo a rede de
+ * saúde cobrindo Itabirito também. Quando a operadora não estiver aqui, usa
+ * a lista normal da rede (CIDADES_POR_REDE).
+ */
+export const CIDADES_POR_OPERADORA: Record<string, OpcaoCidade[]> = {
+  'tem-saude': [SETE_LAGOAS],
+  'centro-ocupacional': [SETE_LAGOAS],
+};
+
 /** Cidades a exibir na página 4 para a rede escolhida (vazio se a rede for inválida). */
 export function cidadesDaRede(redeId: string | undefined): OpcaoCidade[] {
   return redeId ? (CIDADES_POR_REDE[redeId] ?? []) : [];
+}
+
+/**
+ * Cidades a exibir na página 4 pro par rede + operadora escolhidos — checa
+ * primeiro se a operadora restringe as cidades (CIDADES_POR_OPERADORA) e só
+ * cai pra lista da rede (cidadesDaRede) se não houver restrição específica.
+ */
+export function cidadesDoFunil(redeId: string | undefined, operadoraId: string | undefined): OpcaoCidade[] {
+  if (operadoraId && CIDADES_POR_OPERADORA[operadoraId]) return CIDADES_POR_OPERADORA[operadoraId];
+  return cidadesDaRede(redeId);
 }
 
 export function buscarPorId<T extends OpcaoFluxo>(lista: T[], id: string | undefined): T | undefined {

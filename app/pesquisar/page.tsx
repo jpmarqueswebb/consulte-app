@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { buscarPorId, cidadesDaRede, ESPECIALIDADES_TEM_SAUDE, labelOpcao, OPERADORAS, tipoDaRede } from '@/lib/fluxo';
+import { buscarPorId, cidadesDoFunil, ESPECIALIDADES_POR_OPERADORA, labelOpcao, OPERADORAS, tipoDaRede } from '@/lib/fluxo';
 import { BuscaInput } from '@/components/BuscaInput';
 import { SeletorEspecialidade } from '@/components/SeletorEspecialidade';
 import { FundoHero } from '@/components/FundoHero';
@@ -23,9 +23,10 @@ export default async function PesquisarPage({
     redirect('/rede');
   }
 
-  // Nomes das cidades atendidas pela rede escolhida, pra montar o texto abaixo
-  // sem fixar "Itabirito" ou "Sete Lagoas" — segue o que estiver em CIDADES_POR_REDE.
-  const nomesCidades = cidadesDaRede(rede).map((c) => c.nome);
+  // Nomes das cidades atendidas pela rede/operadora escolhida, pra montar o
+  // texto abaixo sem fixar "Itabirito" ou "Sete Lagoas" — segue o que estiver
+  // em CIDADES_POR_REDE/CIDADES_POR_OPERADORA.
+  const nomesCidades = cidadesDoFunil(rede, operadora).map((c) => c.nome);
   const textoCidades =
     nomesCidades.length > 1
       ? `${nomesCidades.slice(0, -1).join(', ')} e ${nomesCidades[nomesCidades.length - 1]}`
@@ -43,12 +44,13 @@ export default async function PesquisarPage({
     .eq('tipo', tipo)
     .order('nome_normalizado');
 
-  // Convênio TEM Saúde ainda não tem base de médicos própria — mostra a lista
-  // fixa de especialidades desse plano em vez de consultar o banco.
-  const especialidades =
-    operadora === 'tem-saude'
-      ? ESPECIALIDADES_TEM_SAUDE.map((nome_normalizado) => ({ nome_normalizado }))
-      : especialidadesTodas;
+  // Operadoras sem base de médicos própria ainda (Convênio TEM Saúde, Centro
+  // Ocupacional) mostram a lista fixa de especialidades do plano em vez de
+  // consultar o banco.
+  const listaFixa = operadora ? ESPECIALIDADES_POR_OPERADORA[operadora] : undefined;
+  const especialidades = listaFixa
+    ? listaFixa.map((nome_normalizado) => ({ nome_normalizado }))
+    : especialidadesTodas;
 
   const parametrosExtras: Record<string, string> = { tipo };
   if (rede) parametrosExtras.rede = rede;
