@@ -1,7 +1,18 @@
 import type { TipoProfissional } from '@/types/database';
 
-export type OpcaoFluxo = { id: string; nome: string };
+export type OpcaoFluxo = {
+  id: string;
+  /** Valor usado para filtrar no banco (ex.: `profissionais.operadora`) — não mexer sem atualizar o cadastro. */
+  nome: string;
+  /** Texto exibido nas telas do funil, quando diferente de `nome` (ex.: nome mais didático pro cliente). */
+  label?: string;
+};
 export type OpcaoCidade = OpcaoFluxo & { uf: string };
+
+/** Texto a exibir pra uma opção do funil: usa `label` quando houver, senão `nome`. */
+export function labelOpcao(opcao: OpcaoFluxo): string {
+  return opcao.label ?? opcao.nome;
+}
 
 /**
  * Redes credenciadas exibidas na página 2. A escolha aqui segmenta todo o resto
@@ -24,12 +35,58 @@ export function tipoDaRede(redeId: string | undefined): TipoProfissional | null 
   return redeId ? (REDE_TIPO[redeId] ?? null) : null;
 }
 
+const AMIL: OpcaoFluxo = { id: 'amil', nome: 'Amil', label: 'Amil Saúde' };
+const AMIL_DENTAL: OpcaoFluxo = { id: 'amil-dental', nome: 'Amil', label: 'Amil Dental' };
+
 /**
- * Operadoras/seguradoras exibidas na página 3. Adicionar novas aqui quando
- * entrarem no ar — o nome precisa bater com o valor salvo em
- * `profissionais.operadora` no banco, pois é usado para filtrar a busca.
+ * Convênio TEM Saúde e Consulte Benefícios — ainda sem base de médicos
+ * cadastrada no banco (ver ESPECIALIDADES_TEM_SAUDE). `nome` não bate com
+ * nenhum `profissionais.operadora` de propósito: a busca não vai encontrar
+ * ninguém até essa base existir, mas a opção já aparece no funil.
  */
-export const OPERADORAS: OpcaoFluxo[] = [{ id: 'amil', nome: 'Amil' }];
+const TEM_SAUDE: OpcaoFluxo = { id: 'tem-saude', nome: 'Convênio TEM Saúde' };
+const CONSULTE_BENEFICIOS: OpcaoFluxo = { id: 'consulte-beneficios', nome: 'Consulte Benefícios' };
+
+/**
+ * Todas as operadoras/seguradoras já cadastradas (união de todas as redes) —
+ * usada em /busca só pra resolver id → nome. O nome precisa bater com o valor
+ * salvo em `profissionais.operadora` no banco, pois é usado para filtrar a busca.
+ */
+export const OPERADORAS: OpcaoFluxo[] = [AMIL, AMIL_DENTAL, TEM_SAUDE, CONSULTE_BENEFICIOS];
+
+/**
+ * Operadoras oferecidas na página 3 conforme a rede escolhida. A rede de
+ * saúde usa Amil, Convênio TEM Saúde e Consulte Benefícios; a rede
+ * odontológica usa a Amil Dental. Ao expandir, é só acrescentar aqui.
+ */
+export const OPERADORAS_POR_REDE: Record<string, OpcaoFluxo[]> = {
+  saude: [AMIL, TEM_SAUDE, CONSULTE_BENEFICIOS],
+  odontologico: [AMIL_DENTAL],
+};
+
+/**
+ * Especialidades que o Convênio TEM Saúde cobre, exatamente como a cliente
+ * passou — a página de pesquisa mostra essa lista fixa (não vem do banco) só
+ * quando essa operadora é escolhida. Sem base de médicos ainda, então a busca
+ * final não retorna resultado, só a especialidade é filtrada.
+ */
+export const ESPECIALIDADES_TEM_SAUDE = [
+  'Cardiologista',
+  'Cirurgião Geral',
+  'Ginecologista',
+  'Urologista',
+  'Psiquiatra',
+  'Angiologista',
+  'Ortopedista',
+  'Nutricionista',
+  'Gastro',
+  'Dermatologista',
+];
+
+/** Operadoras a exibir na página 3 para a rede escolhida (vazio se a rede for inválida). */
+export function operadorasDaRede(redeId: string | undefined): OpcaoFluxo[] {
+  return redeId ? (OPERADORAS_POR_REDE[redeId] ?? []) : [];
+}
 
 const ITABIRITO: OpcaoCidade = { id: 'itabirito-mg', nome: 'Itabirito', uf: 'MG' };
 const SETE_LAGOAS: OpcaoCidade = { id: 'sete-lagoas-mg', nome: 'Sete Lagoas', uf: 'MG' };
@@ -42,12 +99,12 @@ const SETE_LAGOAS: OpcaoCidade = { id: 'sete-lagoas-mg', nome: 'Sete Lagoas', uf
 export const CIDADES: OpcaoCidade[] = [ITABIRITO, SETE_LAGOAS];
 
 /**
- * Cidades oferecidas na página 4 conforme a rede escolhida. A rede de saúde
- * (COMEDI) só tem Itabirito; a rede odontológica da Amil cobre Itabirito e Sete
- * Lagoas. Ao expandir, é só acrescentar aqui.
+ * Cidades oferecidas na página 4 conforme a rede escolhida. Tanto a rede de
+ * saúde quanto a odontológica cobrem Itabirito e Sete Lagoas. Ao expandir, é
+ * só acrescentar aqui.
  */
 export const CIDADES_POR_REDE: Record<string, OpcaoCidade[]> = {
-  saude: [ITABIRITO],
+  saude: [ITABIRITO, SETE_LAGOAS],
   odontologico: [ITABIRITO, SETE_LAGOAS],
 };
 

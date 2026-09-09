@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { tipoDaRede } from '@/lib/fluxo';
+import { buscarPorId, cidadesDaRede, ESPECIALIDADES_TEM_SAUDE, labelOpcao, OPERADORAS, tipoDaRede } from '@/lib/fluxo';
 import { BuscaInput } from '@/components/BuscaInput';
 import { SeletorEspecialidade } from '@/components/SeletorEspecialidade';
 import { FundoHero } from '@/components/FundoHero';
@@ -23,12 +23,32 @@ export default async function PesquisarPage({
     redirect('/rede');
   }
 
+  // Nomes das cidades atendidas pela rede escolhida, pra montar o texto abaixo
+  // sem fixar "Itabirito" ou "Sete Lagoas" — segue o que estiver em CIDADES_POR_REDE.
+  const nomesCidades = cidadesDaRede(rede).map((c) => c.nome);
+  const textoCidades =
+    nomesCidades.length > 1
+      ? `${nomesCidades.slice(0, -1).join(', ')} e ${nomesCidades[nomesCidades.length - 1]}`
+      : (nomesCidades[0] ?? '');
+
+  // Nome da operadora escolhida na página 3, pra não deixar "Amil" fixo no texto
+  // quando a pessoa escolheu Convênio TEM Saúde ou Consulte Benefícios.
+  const operadoraSelecionada = buscarPorId(OPERADORAS, operadora);
+  const nomeOperadora = operadoraSelecionada ? labelOpcao(operadoraSelecionada) : 'Amil';
+
   const supabase = await createClient();
-  const { data: especialidades } = await supabase
+  const { data: especialidadesTodas } = await supabase
     .from('especialidades')
     .select('nome_normalizado')
     .eq('tipo', tipo)
     .order('nome_normalizado');
+
+  // Convênio TEM Saúde ainda não tem base de médicos própria — mostra a lista
+  // fixa de especialidades desse plano em vez de consultar o banco.
+  const especialidades =
+    operadora === 'tem-saude'
+      ? ESPECIALIDADES_TEM_SAUDE.map((nome_normalizado) => ({ nome_normalizado }))
+      : especialidadesTodas;
 
   const parametrosExtras: Record<string, string> = { tipo };
   if (rede) parametrosExtras.rede = rede;
@@ -47,10 +67,8 @@ export default async function PesquisarPage({
           Pesquise pela especialidade ou pelo nome da pessoa
         </h1>
         <p className="text-base text-pretty text-white/85 sm:text-[clamp(1rem,1.6vw,1.25rem)]">
-          {tipo === 'dentista'
-            ? 'Rede odontológica credenciada Amil em Itabirito e Sete Lagoas.'
-            : 'Rede credenciada Amil em Itabirito.'}{' '}
-          Ligue ou chame no WhatsApp direto.
+          {tipo === 'dentista' ? `Rede odontológica credenciada ${nomeOperadora}` : `Rede credenciada ${nomeOperadora}`}
+          {textoCidades ? ` em ${textoCidades}` : ''}. Ligue ou chame no WhatsApp direto.
         </p>
       </div>
 

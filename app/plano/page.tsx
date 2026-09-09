@@ -4,13 +4,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { FundoHero } from '@/components/FundoHero';
 import { SeletorOpcao } from '@/components/SeletorOpcao';
-import { BOTAO_FUNIL_CONTINUAR_CLASSES, OPERADORAS } from '@/lib/fluxo';
+import { BOTAO_FUNIL_CONTINUAR_CLASSES, labelOpcao, operadorasDaRede } from '@/lib/fluxo';
 
 function PlanoConteudo() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rede = searchParams.get('rede') ?? '';
   const [operadoraId, setOperadoraId] = useState<string | null>(null);
+  const operadoras = operadorasDaRede(rede);
 
   function continuar() {
     if (!operadoraId) return;
@@ -29,7 +30,7 @@ function PlanoConteudo() {
 
         <div className="mt-10">
           <SeletorOpcao
-            opcoes={OPERADORAS.map((o) => ({ id: o.id, label: o.nome }))}
+            opcoes={operadoras.map((o) => ({ id: o.id, label: labelOpcao(o) }))}
             valor={operadoraId}
             onSelecionar={setOperadoraId}
           />
