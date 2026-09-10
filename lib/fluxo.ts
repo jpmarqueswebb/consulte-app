@@ -39,14 +39,17 @@ const AMIL: OpcaoFluxo = { id: 'amil', nome: 'Amil', label: 'Amil Saúde' };
 const AMIL_DENTAL: OpcaoFluxo = { id: 'amil-dental', nome: 'Amil', label: 'Amil Dental' };
 
 /**
- * Convênio TEM Saúde, Centro Ocupacional e Consulte Benefícios — ainda sem
- * base de médicos cadastrada no banco (ver ESPECIALIDADES_TEM_SAUDE e
- * ESPECIALIDADES_CENTRO_OCUPACIONAL). `nome` não bate com nenhum
+ * Convênio TEM Saúde e Consulte Benefícios — ainda sem base de médicos
+ * cadastrada no banco (ver ESPECIALIDADES_TEM_SAUDE e
+ * ESPECIALIDADES_CONSULTE_BENEFICIOS). `nome` não bate com nenhum
  * `profissionais.operadora` de propósito: a busca não vai encontrar ninguém
  * até essa base existir, mas a opção já aparece no funil.
+ *
+ * O Centro Ocupacional NÃO é uma opção própria aqui — ele existe só como um
+ * dos resultados possíveis dentro do Consulte Benefícios (junto com a
+ * Clínica Inovar), conforme pedido da cliente.
  */
 const TEM_SAUDE: OpcaoFluxo = { id: 'tem-saude', nome: 'Convênio TEM Saúde' };
-const CENTRO_OCUPACIONAL: OpcaoFluxo = { id: 'centro-ocupacional', nome: 'Centro Ocupacional' };
 const CONSULTE_BENEFICIOS: OpcaoFluxo = { id: 'consulte-beneficios', nome: 'Consulte Benefícios' };
 
 /**
@@ -54,16 +57,15 @@ const CONSULTE_BENEFICIOS: OpcaoFluxo = { id: 'consulte-beneficios', nome: 'Cons
  * usada em /busca só pra resolver id → nome. O nome precisa bater com o valor
  * salvo em `profissionais.operadora` no banco, pois é usado para filtrar a busca.
  */
-export const OPERADORAS: OpcaoFluxo[] = [AMIL, AMIL_DENTAL, TEM_SAUDE, CENTRO_OCUPACIONAL, CONSULTE_BENEFICIOS];
+export const OPERADORAS: OpcaoFluxo[] = [AMIL, AMIL_DENTAL, TEM_SAUDE, CONSULTE_BENEFICIOS];
 
 /**
  * Operadoras oferecidas na página 3 conforme a rede escolhida. A rede de
- * saúde usa Amil, Convênio TEM Saúde, Centro Ocupacional e Consulte
- * Benefícios (nessa ordem); a rede odontológica usa a Amil Dental. Ao
- * expandir, é só acrescentar aqui.
+ * saúde usa Amil, Convênio TEM Saúde e Consulte Benefícios (nessa ordem); a
+ * rede odontológica usa a Amil Dental. Ao expandir, é só acrescentar aqui.
  */
 export const OPERADORAS_POR_REDE: Record<string, OpcaoFluxo[]> = {
-  saude: [AMIL, TEM_SAUDE, CENTRO_OCUPACIONAL, CONSULTE_BENEFICIOS],
+  saude: [AMIL, TEM_SAUDE, CONSULTE_BENEFICIOS],
   odontologico: [AMIL_DENTAL],
 };
 
@@ -87,10 +89,14 @@ export const ESPECIALIDADES_TEM_SAUDE = [
 ];
 
 /**
- * Especialidades que o Centro Ocupacional cobre, exatamente como a cliente
- * passou (repetições removidas) — mesmo esquema de lista fixa acima.
+ * Especialidades/exames que o Consulte Benefícios cobre — junção do que o
+ * Centro Ocupacional e a Clínica Inovar oferecem (as duas clínicas por trás
+ * desse plano; ver ESPECIALIDADES_CONSULTE_BENEFICIOS_CENTRO_OCUPACIONAL e
+ * ESPECIALIDADES_CONSULTE_BENEFICIOS_INOVAR). Quem tiver a especialidade
+ * cadastrada aparece no resultado: pode ser só uma clínica ou as duas juntas
+ * (ex.: Nutricionista e Psicologia, que ambas oferecem).
  */
-export const ESPECIALIDADES_CENTRO_OCUPACIONAL = [
+const ESPECIALIDADES_CONSULTE_BENEFICIOS_CENTRO_OCUPACIONAL = [
   'Alergista',
   'Angiologia',
   'Cardiologia',
@@ -116,12 +122,7 @@ export const ESPECIALIDADES_CENTRO_OCUPACIONAL = [
   'Urologia',
 ];
 
-/**
- * Especialidades/exames que o Consulte Benefícios cobre, corrigindo só erros
- * de digitação óbvios do texto que a cliente passou (acentos e "Adbdome" /
- * "Abdoem" → "Abdome") — mesmo esquema de lista fixa acima.
- */
-export const ESPECIALIDADES_CONSULTE_BENEFICIOS = [
+const ESPECIALIDADES_CONSULTE_BENEFICIOS_INOVAR = [
   'Ecocardiograma / Ecodopplercardiograma',
   'Audiometria / Aparelho Auditivo',
   'Nutricionista',
@@ -155,14 +156,18 @@ export const ESPECIALIDADES_CONSULTE_BENEFICIOS = [
   'Ultrassom Músculo e Articulações (por articulação)',
 ];
 
+/** Lista final exibida na página de pesquisa: união das duas acima, sem repetir "Nutricionista"/"Psicologia". */
+export const ESPECIALIDADES_CONSULTE_BENEFICIOS = Array.from(
+  new Set([...ESPECIALIDADES_CONSULTE_BENEFICIOS_CENTRO_OCUPACIONAL, ...ESPECIALIDADES_CONSULTE_BENEFICIOS_INOVAR])
+);
+
 /**
  * Operadoras cuja lista de especialidades da página de pesquisa é fixa
- * (não vem do banco) — ver ESPECIALIDADES_TEM_SAUDE,
- * ESPECIALIDADES_CENTRO_OCUPACIONAL e ESPECIALIDADES_CONSULTE_BENEFICIOS.
+ * (não vem do banco) — ver ESPECIALIDADES_TEM_SAUDE e
+ * ESPECIALIDADES_CONSULTE_BENEFICIOS.
  */
 export const ESPECIALIDADES_POR_OPERADORA: Record<string, string[]> = {
   'tem-saude': ESPECIALIDADES_TEM_SAUDE,
-  'centro-ocupacional': ESPECIALIDADES_CENTRO_OCUPACIONAL,
   'consulte-beneficios': ESPECIALIDADES_CONSULTE_BENEFICIOS,
 };
 
@@ -193,13 +198,12 @@ export const CIDADES_POR_REDE: Record<string, OpcaoCidade[]> = {
 
 /**
  * Operadoras que restringem as cidades da página 4 a um subconjunto — Convênio
- * TEM Saúde, Centro Ocupacional e Consulte Benefícios atendem só Sete Lagoas,
- * mesmo a rede de saúde cobrindo Itabirito também. Quando a operadora não
- * estiver aqui, usa a lista normal da rede (CIDADES_POR_REDE).
+ * TEM Saúde e Consulte Benefícios atendem só Sete Lagoas, mesmo a rede de
+ * saúde cobrindo Itabirito também. Quando a operadora não estiver aqui, usa
+ * a lista normal da rede (CIDADES_POR_REDE).
  */
 export const CIDADES_POR_OPERADORA: Record<string, OpcaoCidade[]> = {
   'tem-saude': [SETE_LAGOAS],
-  'centro-ocupacional': [SETE_LAGOAS],
   'consulte-beneficios': [SETE_LAGOAS],
 };
 
