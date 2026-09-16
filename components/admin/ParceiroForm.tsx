@@ -76,149 +76,151 @@ export function ParceiroForm({ cidades }: { cidades: Cidade[] }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-xl border border-gray-200">
+    <form onSubmit={handleSubmit} className="space-y-5 max-w-2xl">
       {erro && (
-        <div className="rounded-lg bg-red-50 p-3 text-xs text-red-700 border border-red-200">
+        <div className="rounded-xl bg-rose-500/20 p-3.5 text-xs text-rose-100 border border-rose-400/40">
           {erro}
         </div>
       )}
 
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Nome da Empresa / Parceiro *
+        </label>
+        <input
+          type="text"
+          required
+          value={nome}
+          onChange={(e) => handleNomeChange(e.target.value)}
+          placeholder="Ex: Drogarias Pacheco - Centro"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
-            Nome do Estabelecimento *
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            Identificador do Link (Slug) *
           </label>
           <input
             type="text"
             required
-            value={nome}
-            onChange={(e) => handleNomeChange(e.target.value)}
-            placeholder="Ex.: Drogaria Central"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="drogarias-pacheco-centro"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm font-mono text-xs"
           />
+          <span className="text-[11px] text-white/60 mt-1 block">
+            Link: /parceiro/<strong>{slug || 'slug'}</strong>/pesquisa
+          </span>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
-            Identificador na URL (Slug) *
-          </label>
-          <div className="flex items-center rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500">
-            <span>/parceiro/</span>
-            <input
-              type="text"
-              required
-              value={slug}
-              onChange={(e) => setSlug(gerarSlug(e.target.value))}
-              placeholder="drogaria-central"
-              className="flex-1 bg-transparent px-1 font-semibold text-gray-900 focus:outline-none"
-            />
-            <span>/pesquisa</span>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
-            Cidade *
-          </label>
-          <select
-            value={cidadeId}
-            onChange={(e) => setCidadeId(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-          >
-            {cidades.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.nome} / {c.uf}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
             Categoria *
           </label>
           <select
             value={categoria}
             onChange={(e) => setCategoria(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
           >
             <option value="Farmácia">Farmácia / Drogaria</option>
             <option value="Ótica">Ótica</option>
             <option value="Laboratório">Laboratório / Exames</option>
             <option value="Academia">Academia / Bem-estar</option>
-            <option value="Alimentação">Alimentação Saudável</option>
-            <option value="Outro">Outro</option>
+            <option value="Clínica">Clínica Médica / Odontológica</option>
+            <option value="Outros">Outros Serviços</option>
           </select>
         </div>
+      </div>
 
-        <div className="md:col-span-2">
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
-            Regra / Descrição do Desconto *
-          </label>
-          <input
-            type="text"
-            required
-            value={descontoDescricao}
-            onChange={(e) => setDescontoDescricao(e.target.value)}
-            placeholder="Ex.: 20% de desconto em medicamentos genéricos e 10% nos demais"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-          />
-        </div>
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Cidade de Atendimento *
+        </label>
+        <select
+          value={cidadeId}
+          onChange={(e) => setCidadeId(e.target.value)}
+          required
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
+        >
+          {cidades.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nome} - {c.uf}
+            </option>
+          ))}
+        </select>
+      </div>
 
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Regra de Desconto Cadastrada *
+        </label>
+        <input
+          type="text"
+          required
+          value={descontoDescricao}
+          onChange={(e) => setDescontoDescricao(e.target.value)}
+          placeholder="Ex: Até 25% em genéricos e 10% em perfumaria"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
-            Telefone Fixo
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            Telefone de Atendimento
           </label>
           <input
             type="text"
             value={telefone}
             onChange={(e) => setTelefone(e.target.value)}
             placeholder="(31) 3561-0000"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
-            WhatsApp
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            WhatsApp para Contato
           </label>
           <input
             type="text"
             value={whatsapp}
             onChange={(e) => setWhatsapp(e.target.value)}
             placeholder="(31) 98888-0000"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
-            Endereço Completo
-          </label>
-          <input
-            type="text"
-            value={endereco}
-            onChange={(e) => setEndereco(e.target.value)}
-            placeholder="Rua, número, bairro, cidade - UF"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
           />
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Endereço Completo
+        </label>
+        <input
+          type="text"
+          value={endereco}
+          onChange={(e) => setEndereco(e.target.value)}
+          placeholder="Rua, número, bairro, cidade - UF"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
+        />
+      </div>
+
+      <div className="flex justify-end gap-3 pt-6 border-t border-white/15">
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-bold text-white hover:bg-white/20 transition-all cursor-pointer"
         >
           Cancelar
         </button>
         <button
           type="submit"
           disabled={salvando}
-          className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-700 disabled:opacity-50"
+          className="rounded-xl bg-gradient-to-r from-brand-blue to-brand-navy border border-white/20 px-6 py-2.5 text-xs font-bold text-white shadow-xl hover:scale-102 hover:brightness-110 transition-all disabled:opacity-50 cursor-pointer"
         >
-          {salvando ? 'Salvando...' : 'Cadastrar Empresa Parceira'}
+          {salvando ? 'Salvando...' : 'Salvar Empresa Parceira'}
         </button>
       </div>
     </form>

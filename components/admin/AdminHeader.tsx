@@ -13,9 +13,10 @@ export function AdminHeader({
   titulo,
   subtitulo,
   hrefVoltar,
-  mostrarVoltar = true,
+  mostrarVoltar = false,
 }: AdminHeaderProps) {
   const router = useRouter();
+  const deveMostrarVoltar = mostrarVoltar || Boolean(hrefVoltar);
 
   function voltar() {
     if (hrefVoltar) {
@@ -28,7 +29,7 @@ export function AdminHeader({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-white/10">
       <div className="flex items-center gap-3">
-        {mostrarVoltar && (
+        {deveMostrarVoltar && (
           <button
             type="button"
             onClick={voltar}

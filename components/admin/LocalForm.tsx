@@ -63,107 +63,147 @@ export function LocalForm({
   }
 
   return (
-    <form onSubmit={salvar} className="flex max-w-md flex-col gap-3">
-      <label className="text-sm font-medium text-gray-700">
-        Nome do local
+    <form onSubmit={salvar} className="flex max-w-2xl flex-col gap-4">
+      {erro && (
+        <div className="rounded-xl bg-rose-500/20 p-3.5 text-xs text-rose-100 border border-rose-400/40">
+          {erro}
+        </div>
+      )}
+
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Nome do Local (Clínica, Consultório ou Hospital) *
+        </label>
         <input
           value={nome}
           onChange={(e) => setNome(e.target.value)}
           required
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          placeholder="Ex: Clínica São Patrício"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
         />
-      </label>
+      </div>
 
-      <label className="text-sm font-medium text-gray-700">
-        Cidade
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Cidade *
+        </label>
         <select
           value={cidadeId}
           onChange={(e) => setCidadeId(e.target.value)}
           required
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
         >
           {cidades.map((c) => (
             <option key={c.id} value={c.id}>
-              {c.nome}/{c.uf}
+              {c.nome} - {c.uf}
             </option>
           ))}
         </select>
-      </label>
+      </div>
 
-      <label className="text-sm font-medium text-gray-700">
-        Endereço
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Endereço Completo
+        </label>
         <input
           value={endereco}
           onChange={(e) => setEndereco(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          placeholder="Rua, número, bairro"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
         />
-      </label>
+      </div>
 
-      <label className="text-sm font-medium text-gray-700">
-        CEP
-        <input
-          value={cep}
-          onChange={(e) => setCep(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-        />
-      </label>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div>
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            CEP
+          </label>
+          <input
+            value={cep}
+            onChange={(e) => setCep(e.target.value)}
+            placeholder="35450-000"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
+          />
+        </div>
 
-      <label className="text-sm font-medium text-gray-700">
-        Telefone principal
-        <input
-          value={telefonePrincipal}
-          onChange={(e) => setTelefonePrincipal(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-        />
-      </label>
+        <div>
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            Telefone fixo
+          </label>
+          <input
+            value={telefonePrincipal}
+            onChange={(e) => setTelefonePrincipal(e.target.value)}
+            placeholder="(31) 3561-0000"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
+          />
+        </div>
 
-      <label className="text-sm font-medium text-gray-700">
-        WhatsApp principal
-        <input
-          value={whatsappPrincipal}
-          onChange={(e) => setWhatsappPrincipal(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-        />
-      </label>
+        <div>
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            WhatsApp principal
+          </label>
+          <input
+            value={whatsappPrincipal}
+            onChange={(e) => setWhatsappPrincipal(e.target.value)}
+            placeholder="(31) 98888-0000"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
+          />
+        </div>
+      </div>
 
-      <label className="text-sm font-medium text-gray-700">
-        Horário de funcionamento
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Horário de funcionamento
+        </label>
         <input
           value={horario}
           onChange={(e) => setHorario(e.target.value)}
-          placeholder="Seg a Sex, 8h-18h"
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          placeholder="Seg a Sex, 8h às 18h"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
         />
-      </label>
+      </div>
 
-      <div className="flex gap-3">
-        <label className="flex-1 text-sm font-medium text-gray-700">
-          Latitude (opcional)
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            Latitude (opcional)
+          </label>
           <input
             value={latitude}
             onChange={(e) => setLatitude(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            placeholder="-20.12345"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
           />
-        </label>
-        <label className="flex-1 text-sm font-medium text-gray-700">
-          Longitude (opcional)
+        </div>
+        <div>
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            Longitude (opcional)
+          </label>
           <input
             value={longitude}
             onChange={(e) => setLongitude(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            placeholder="-43.12345"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
           />
-        </label>
+        </div>
       </div>
 
-      {erro && <p className="text-sm text-red-600">{erro}</p>}
-
-      <button
-        type="submit"
-        disabled={salvando}
-        className="mt-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-      >
-        {salvando ? 'Salvando...' : 'Salvar local'}
-      </button>
+      <div className="flex justify-end gap-3 pt-6 border-t border-white/15">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-bold text-white hover:bg-white/20 transition-all cursor-pointer"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          disabled={salvando}
+          className="rounded-xl bg-gradient-to-r from-brand-blue to-brand-navy border border-white/20 px-6 py-2.5 text-xs font-bold text-white shadow-xl hover:scale-102 hover:brightness-110 transition-all disabled:opacity-50 cursor-pointer"
+        >
+          {salvando ? 'Salvando...' : 'Salvar Local'}
+        </button>
+      </div>
     </form>
   );
 }

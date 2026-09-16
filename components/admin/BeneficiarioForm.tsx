@@ -21,6 +21,16 @@ export function BeneficiarioForm() {
   const [dataNascimento, setDataNascimento] = useState('');
   const [endereco, setEndereco] = useState('');
   const [status, setStatus] = useState<'ativo' | 'inativo'>('ativo');
+  const [fotoArquivo, setFotoArquivo] = useState<File | null>(null);
+  const [fotoPreview, setFotoPreview] = useState<string | null>(null);
+
+  function handleFotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFotoArquivo(file);
+      setFotoPreview(URL.createObjectURL(file));
+    }
+  }
 
   // Dependentes (até 4)
   const [dependentes, setDependentes] = useState<DependenteInput[]>([]);
@@ -75,6 +85,22 @@ export function BeneficiarioForm() {
       if (!res.ok) {
         setErro(data.error || 'Erro ao cadastrar beneficiário.');
       } else {
+        // Se o usuário selecionou uma foto, faz o upload agora
+        if (data.titular?.id && fotoArquivo) {
+          try {
+            const formData = new FormData();
+            formData.append('id', data.titular.id);
+            formData.append('tipo', 'titular');
+            formData.append('foto', fotoArquivo);
+            await fetch('/api/carteirinha/foto', {
+              method: 'POST',
+              body: formData,
+            });
+          } catch {
+            // Se falhar o upload da foto, o titular já foi salvo
+          }
+        }
+
         router.push('/admin/beneficiarios');
         router.refresh();
       }
@@ -98,6 +124,54 @@ export function BeneficiarioForm() {
         <h2 className="text-base font-bold text-white border-b border-white/15 pb-2 mb-4">
           Dados do Titular
         </h2>
+
+        {/* Upload de Imagem do Titular */}
+        <div className="mb-5 flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/15">
+          <div className="relative h-24 w-20 rounded-2xl overflow-hidden bg-white/10 border-2 border-white/20 flex items-center justify-center shrink-0">
+            {fotoPreview ? (
+              <img src={fotoPreview} alt="Preview" className="h-full w-full object-cover" />
+            ) : (
+              <div className="text-center text-white/50 text-[10px] p-2">
+                <svg className="w-8 h-8 mx-auto mb-1 stroke-current" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Sem foto
+              </div>
+            )}
+          </div>
+
+          <div className="flex-1 text-center sm:text-left space-y-1">
+            <span className="block text-xs uppercase font-bold tracking-wider text-brand-sky">
+              Foto da Carteirinha (Opcional)
+            </span>
+            <p className="text-xs text-white/70">
+              Adicione a foto oficial da pessoa para visualização na Carteirinha Digital.
+            </p>
+            <div className="pt-1">
+              <label className="inline-flex items-center gap-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 px-3.5 py-1.5 text-xs font-bold text-white cursor-pointer transition-all">
+                <span>{fotoArquivo ? 'Trocar Foto' : '+ Selecionar Imagem'}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFotoChange}
+                  className="hidden"
+                />
+              </label>
+              {fotoArquivo && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFotoArquivo(null);
+                    setFotoPreview(null);
+                  }}
+                  className="ml-2 text-xs text-rose-300 hover:underline"
+                >
+                  Remover
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>

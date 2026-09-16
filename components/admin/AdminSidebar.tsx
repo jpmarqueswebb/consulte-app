@@ -158,15 +158,11 @@ export function AdminSidebar({ userName = 'Admin', userEmail = '' }: AdminSideba
           <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
         </Link>
 
-        {/* Avatar do Usuário */}
+        {/* Avatar do Usuário (sem sinal pulsante) */}
         <div className="relative group flex flex-col items-center">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-black text-sm shadow-md border border-white/20">
             {inicialNome}
           </div>
-          <span className="absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 border border-slate-900" />
-          </span>
         </div>
 
         <div className="h-px w-8 bg-white/10" />
@@ -198,24 +194,8 @@ export function AdminSidebar({ userName = 'Admin', userEmail = '' }: AdminSideba
         </nav>
       </div>
 
-      {/* Rodapé da Sidebar: Voltar ao App e Logout */}
+      {/* Rodapé da Sidebar: Apenas Logout limpo */}
       <div className="flex flex-col items-center gap-3 pt-6 border-t border-white/10">
-        {/* Botão para Voltar ao App Público */}
-        <Link
-          href="/"
-          target="_blank"
-          title="Abrir App Público (Site)"
-          className="group relative flex h-11 w-11 items-center justify-center rounded-2xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
-        >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span className="absolute left-full ml-3 hidden rounded-xl bg-slate-900/95 border border-white/10 px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shadow-xl backdrop-blur-md group-hover:block z-50">
-            Ver App Público
-          </span>
-        </Link>
-
-        {/* Botão de Sair (Logout) */}
         <button
           type="button"
           onClick={handleLogout}

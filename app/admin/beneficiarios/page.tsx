@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { AdminHeader } from '@/components/admin/AdminHeader';
+import { ImportadorBeneficiariosCsv } from '@/components/admin/ImportadorBeneficiariosCsv';
 
 export default async function AdminBeneficiariosPage({
   searchParams,
@@ -37,12 +38,16 @@ export default async function AdminBeneficiariosPage({
             Total de titulares: {(beneficiarios ?? []).length}
           </span>
         </div>
-        <Link
-          href="/admin/beneficiarios/novo"
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-navy border border-white/20 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:scale-102 hover:brightness-110 transition-all"
-        >
-          <span>+ Novo Beneficiário</span>
-        </Link>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <ImportadorBeneficiariosCsv />
+          <Link
+            href="/admin/beneficiarios/novo"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-navy border border-white/20 px-4 py-2 text-xs font-bold text-white shadow-md hover:scale-102 hover:brightness-110 transition-all"
+          >
+            <span>+ Novo Beneficiário</span>
+          </Link>
+        </div>
       </div>
 
       {/* Filtro de Busca */}

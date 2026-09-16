@@ -161,141 +161,173 @@ export function ProfissionalForm({
   }
 
   return (
-    <form onSubmit={salvar} className="flex max-w-2xl flex-col gap-4">
-      <div className="flex gap-3">
-        <label className="flex-1 text-sm font-medium text-gray-700">
-          Nome
-          <input
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-          />
+    <form onSubmit={salvar} className="flex max-w-2xl flex-col gap-5">
+      {erro && (
+        <div className="rounded-xl bg-rose-500/20 p-3.5 text-xs text-rose-100 border border-rose-400/40">
+          {erro}
+        </div>
+      )}
+
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Nome Completo do Profissional *
         </label>
+        <input
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          required
+          placeholder="Ex: Dra. Juliana Fernandes"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
+        />
       </div>
 
       <div className="flex gap-3">
-        <label className="flex-1 text-sm font-medium text-gray-700">
-          CRM
+        <div className="flex-1">
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            CRM (Apenas números) *
+          </label>
           <input
             value={crm}
             onChange={(e) => setCrm(e.target.value)}
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            placeholder="Ex: 54321"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
           />
-        </label>
-        <label className="w-24 text-sm font-medium text-gray-700">
-          UF
+        </div>
+        <div className="w-28">
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            UF *
+          </label>
           <input
             value={ufCrm}
             onChange={(e) => setUfCrm(e.target.value.toUpperCase())}
             maxLength={2}
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            placeholder="MG"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm text-center"
           />
-        </label>
+        </div>
       </div>
 
-      <label className="text-sm font-medium text-gray-700">
-        Situação
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Situação Cadastral
+        </label>
         <select
           value={situacao}
           onChange={(e) => setSituacao(e.target.value as Situacao)}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
         >
           <option value="ativo">Ativo</option>
           <option value="inativo">Inativo</option>
           <option value="atende_apenas_em_outra_cidade">Atende só em outra cidade</option>
         </select>
-      </label>
+      </div>
 
       {situacao !== 'ativo' && (
-        <label className="text-sm font-medium text-gray-700">
-          Observação da situação
+        <div>
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+            Observação da situação
+          </label>
           <textarea
             value={situacaoObs}
             onChange={(e) => setSituacaoObs(e.target.value)}
             rows={2}
             placeholder="Ex: cooperada solicitou demissão / atende só em BH"
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
           />
-        </label>
+        </div>
       )}
 
-      <label className="text-sm font-medium text-gray-700">
-        Link de agendamento online (Doctoralia, etc)
+      <div>
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1.5">
+          Link de agendamento online (Doctoralia, etc.)
+        </label>
         <input
           type="url"
           value={linkAgendamento}
           onChange={(e) => setLinkAgendamento(e.target.value)}
           placeholder="https://www.doctoralia.com.br/..."
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-xl bg-white px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none focus:ring-4 focus:ring-brand-sky/30 shadow-sm"
         />
-        <span className="mt-1 block text-xs text-gray-400">
-          Opcional. Deixe em branco se o profissional não tiver agendamento online.
+        <span className="mt-1.5 block text-xs text-white/70">
+          Opcional. Deixe em branco se o profissional não tiver link de agendamento.
         </span>
-      </label>
+      </div>
 
-      <div>
-        <p className="text-sm font-medium text-gray-700">Especialidades</p>
-        <div className="mt-1 flex flex-wrap gap-2">
-          {especialidadesLista.map((e) => (
-            <button
-              type="button"
-              key={e.id}
-              onClick={() => toggleEspecialidade(e.id)}
-              className={`rounded-full border px-3 py-1 text-xs font-medium ${
-                especialidadeIds.includes(e.id)
-                  ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 text-gray-600'
-              }`}
-            >
-              {e.nome_normalizado}
-            </button>
-          ))}
+      {/* Especialidades com alto contraste */}
+      <div className="pt-2">
+        <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-2">
+          Especialidades do Profissional:
+        </label>
+        <div className="flex flex-wrap gap-2 max-h-56 overflow-y-auto p-3 rounded-2xl bg-white/5 border border-white/15">
+          {especialidadesLista.map((e) => {
+            const selecionada = especialidadeIds.includes(e.id);
+            return (
+              <button
+                type="button"
+                key={e.id}
+                onClick={() => toggleEspecialidade(e.id)}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                  selecionada
+                    ? 'border-2 border-brand-sky bg-brand-blue text-white font-bold shadow-md scale-105'
+                    : 'border border-white/25 bg-white/10 text-white/90 hover:bg-white/20 hover:text-white'
+                }`}
+              >
+                {e.nome_normalizado}
+              </button>
+            );
+          })}
         </div>
-        <div className="mt-2 flex gap-2">
+
+        <div className="mt-3 flex gap-2">
           <input
             value={novaEspecialidade}
             onChange={(e) => setNovaEspecialidade(e.target.value)}
-            placeholder="Nova especialidade"
-            className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
+            placeholder="Cadastrar nova especialidade..."
+            className="flex-1 rounded-xl bg-white px-4 py-2 text-sm font-bold text-slate-900 placeholder:text-gray-400 border border-white/20 focus:outline-none shadow-sm"
           />
           <button
             type="button"
             onClick={criarEspecialidade}
-            className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
+            className="rounded-xl bg-white/20 hover:bg-white/30 border border-white/25 px-4 py-2 text-xs font-bold text-white transition-all cursor-pointer"
           >
             Adicionar
           </button>
         </div>
       </div>
 
-      <div>
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-medium text-gray-700">Locais de atendimento</p>
+      {/* Locais de atendimento */}
+      <div className="pt-3 border-t border-white/15">
+        <div className="flex items-center justify-between mb-3">
+          <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky">
+            Locais de atendimento conveniados
+          </label>
           <button
             type="button"
             onClick={adicionarVinculo}
-            className="text-sm text-blue-600"
+            className="rounded-xl border border-brand-sky/40 bg-brand-sky/15 px-3.5 py-1.5 text-xs font-bold text-brand-sky hover:bg-brand-sky/25 transition-all cursor-pointer"
             disabled={todosLocais.length === 0}
           >
             + Adicionar local
           </button>
         </div>
 
-        <div className="mt-2 flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
           {vinculos.map((v, i) => {
             const digitosWhatsapp = v.whatsapp ? apenasDigitos(v.whatsapp) : '';
             const alertaWhatsapp = digitosWhatsapp.length === 10;
 
             return (
-              <div key={i} className="rounded-lg border border-gray-200 p-3">
-                <div className="flex gap-2">
+              <div key={i} className="rounded-2xl border border-white/20 bg-white/10 p-4 space-y-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-white/80 mb-1">
+                    Local de Atendimento:
+                  </label>
                   <select
                     value={v.local_id}
                     onChange={(e) => atualizarVinculo(i, { local_id: e.target.value })}
-                    className="flex-1 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
+                    className="w-full rounded-xl bg-white px-3.5 py-2.5 text-sm font-bold text-slate-900 border border-white/20"
                   >
                     {todosLocais.map((l) => (
                       <option key={l.id} value={l.id}>
@@ -303,47 +335,71 @@ export function ProfissionalForm({
                       </option>
                     ))}
                   </select>
-                  <button type="button" onClick={() => removerVinculo(i)} className="text-sm text-red-600">
-                    Remover
-                  </button>
                 </div>
-                <div className="mt-2 flex gap-2">
-                  <input
-                    value={v.telefone}
-                    onChange={(e) => atualizarVinculo(i, { telefone: e.target.value })}
-                    placeholder="Telefone (opcional, se diferente do local)"
-                    className="flex-1 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
-                  />
-                  <input
-                    value={v.whatsapp}
-                    onChange={(e) => atualizarVinculo(i, { whatsapp: e.target.value })}
-                    placeholder="WhatsApp (opcional)"
-                    className="flex-1 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
-                  />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-bold text-white/80 mb-1">
+                      Telefone fixo:
+                    </label>
+                    <input
+                      value={v.telefone}
+                      onChange={(e) => atualizarVinculo(i, { telefone: e.target.value })}
+                      placeholder="(31) 3561-0000"
+                      className="w-full rounded-xl bg-white px-3.5 py-2 text-sm font-bold text-slate-900 placeholder:text-gray-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-white/80 mb-1">
+                      WhatsApp:
+                    </label>
+                    <input
+                      value={v.whatsapp}
+                      onChange={(e) => atualizarVinculo(i, { whatsapp: e.target.value })}
+                      placeholder="(31) 98888-0000"
+                      className="w-full rounded-xl bg-white px-3.5 py-2 text-sm font-bold text-slate-900 placeholder:text-gray-400"
+                    />
+                  </div>
                 </div>
+
                 {alertaWhatsapp && (
-                  <p className="mt-1 text-xs text-amber-700">
-                    Número com 8 dígitos (padrão antigo) — será marcado para conferência, sem auto-correção.
+                  <p className="text-xs text-amber-300 font-medium">
+                    Aviso: número com 10 dígitos (DDD + 8 dígitos). Verifique se precisa do 9º dígito.
                   </p>
                 )}
+
+                <div className="flex justify-end pt-1">
+                  <button
+                    type="button"
+                    onClick={() => removerVinculo(i)}
+                    className="text-xs font-semibold text-rose-400 hover:text-rose-300 cursor-pointer"
+                  >
+                    Remover este local
+                  </button>
+                </div>
               </div>
             );
           })}
-          {vinculos.length === 0 && (
-            <p className="text-sm text-gray-500">Nenhum local vinculado ainda.</p>
-          )}
         </div>
       </div>
 
-      {erro && <p className="text-sm text-red-600">{erro}</p>}
-
-      <button
-        type="submit"
-        disabled={salvando}
-        className="mt-2 self-start rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-      >
-        {salvando ? 'Salvando...' : 'Salvar profissional'}
-      </button>
+      <div className="flex justify-end gap-3 pt-6 border-t border-white/15">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-bold text-white hover:bg-white/20 transition-all cursor-pointer"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          disabled={salvando}
+          className="rounded-xl bg-gradient-to-r from-brand-blue to-brand-navy border border-white/20 px-6 py-2.5 text-xs font-bold text-white shadow-xl hover:scale-102 hover:brightness-110 transition-all disabled:opacity-50 cursor-pointer"
+        >
+          {salvando ? 'Salvando...' : 'Salvar Profissional'}
+        </button>
+      </div>
     </form>
   );
 }
