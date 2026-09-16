@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-interface Opcao {
+export interface OpcaoSeletor {
   id: string;
   label: string;
+  descricao?: string;
 }
 
 /** "Select" customizado (mesmo estilo do dropdown de sugestões da busca), usado nas páginas 3 e 4. */
@@ -14,7 +15,7 @@ export function SeletorOpcao({
   onSelecionar,
   placeholder = 'Escolha um',
 }: {
-  opcoes: Opcao[];
+  opcoes: OpcaoSeletor[];
   valor: string | null;
   onSelecionar: (id: string) => void;
   placeholder?: string;
@@ -69,15 +70,15 @@ export function SeletorOpcao({
       <button
         type="button"
         onClick={alternar}
-        className="campo-funil flex w-full cursor-pointer items-center justify-between gap-3 rounded-full border border-white/40 bg-white/90 text-left text-brand-navy shadow-lg backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
+        className="campo-funil flex w-full cursor-pointer items-center justify-between gap-3 rounded-full border border-white/40 bg-white/95 text-left text-brand-navy shadow-lg backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
       >
-        <span className={selecionada ? 'font-medium' : 'text-gray-500'}>
+        <span className={selecionada ? 'font-semibold' : 'text-gray-500'}>
           {selecionada ? selecionada.label : placeholder}
         </span>
         <svg
           viewBox="0 0 20 20"
           fill="currentColor"
-          className={`h-5 w-5 shrink-0 text-brand-blue transition-transform ${aberto ? 'rotate-180' : ''}`}
+          className={`h-5 w-5 shrink-0 text-brand-blue transition-transform duration-200 ${aberto ? 'rotate-180' : ''}`}
         >
           <path
             fillRule="evenodd"
@@ -90,7 +91,7 @@ export function SeletorOpcao({
       {aberto && (
         <ul
           style={{ maxHeight: menu.maxAltura }}
-          className={`absolute z-30 w-full overflow-y-auto overscroll-contain rounded-2xl border border-white/40 bg-white shadow-2xl ${
+          className={`absolute z-30 w-full overflow-y-auto overscroll-contain rounded-2xl border border-white/40 bg-white shadow-2xl divide-y divide-gray-100 ${
             menu.paraCima ? 'bottom-full mb-2' : 'top-full mt-2'
           }`}
         >
@@ -102,9 +103,16 @@ export function SeletorOpcao({
                   onSelecionar(opcao.id);
                   setAberto(false);
                 }}
-                className="campo-funil-opcao w-full cursor-pointer text-left text-gray-700 hover:bg-brand-bg/80"
+                className="w-full cursor-pointer text-left px-5 py-3.5 hover:bg-brand-bg/90 transition-colors"
               >
-                {opcao.label}
+                <span className="block font-semibold text-brand-navy text-sm sm:text-base">
+                  {opcao.label}
+                </span>
+                {opcao.descricao && (
+                  <span className="block text-xs text-gray-500 font-normal mt-0.5 leading-snug">
+                    {opcao.descricao}
+                  </span>
+                )}
               </button>
             </li>
           ))}

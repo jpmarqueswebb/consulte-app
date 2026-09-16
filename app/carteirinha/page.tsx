@@ -52,8 +52,8 @@ export default function CarteirinhaPage() {
   }
 
   return (
-    <FundoHero hrefVoltar="/">
-      <div className="mx-auto w-full max-w-lg">
+    <FundoHero hrefVoltar="/" alinhamento="topo">
+      <div className="mx-auto w-full max-w-2xl">
         <div className="text-center mb-6">
           <span className="text-xs font-bold uppercase tracking-widest text-[#3BAEE1]">
             Consulte Benefícios

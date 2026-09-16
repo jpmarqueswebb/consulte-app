@@ -3,8 +3,8 @@ import { FundoHero } from '@/components/FundoHero';
 
 export default function ProgramaPratiquePage() {
   return (
-    <FundoHero hrefVoltar="/beneficios">
-      <div className="mx-auto w-full max-w-xl text-left space-y-6">
+    <FundoHero hrefVoltar="/beneficios" alinhamento="topo">
+      <div className="mx-auto w-full max-w-xl text-left space-y-6 pt-2">
         {/* Cabeçalho */}
         <div className="text-center">
           <span className="inline-block rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 text-xs font-bold text-emerald-300 uppercase tracking-wider">

@@ -10,14 +10,25 @@ import { ShaderBackground } from '@/components/ui/blue-noise';
 export function FundoHero({
   children,
   hrefVoltar,
+  alinhamento = 'centro',
 }: {
   children: ReactNode;
   /** URL da etapa anterior do funil — exibe o link "Voltar" no topo esquerdo quando informada (todas as páginas exceto a 1ª). */
   hrefVoltar?: string;
+  /** Alinhamento vertical do conteúdo: 'centro' (padrão) ou 'topo' para páginas com conteúdo mais longo. */
+  alinhamento?: 'centro' | 'topo';
 }) {
+  const ehTopo = alinhamento === 'topo';
+
   return (
     <div className="min-h-dvh bg-brand-bg">
-      <section className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-brand-navy px-4 py-6 text-center sm:py-10">
+      <section
+        className={`relative flex min-h-dvh flex-col items-center overflow-x-hidden px-4 text-center ${
+          ehTopo
+            ? 'justify-start pt-28 pb-20 sm:pt-44 sm:pb-24'
+            : 'justify-center py-6 sm:py-10'
+        } bg-brand-navy`}
+      >
         <div
           className="absolute inset-0 bg-cover bg-center md:hidden"
           style={{ backgroundImage: 'url(/FUNDO%20SEM%20TEXTO%20MOBILE.png)' }}
