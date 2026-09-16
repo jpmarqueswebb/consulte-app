@@ -4,18 +4,20 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { FundoHero } from '@/components/FundoHero';
 import { SeletorOpcao } from '@/components/SeletorOpcao';
-import { BOTAO_FUNIL_CONTINUAR_CLASSES, cidadesDoFunil } from '@/lib/fluxo';
+import { BotaoFunil } from '@/components/BotaoFunil';
+import { cidadesDoFunil } from '@/lib/fluxo';
 
 function CidadeConteudo() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rede = searchParams.get('rede') ?? '';
   const operadora = searchParams.get('operadora') ?? '';
+  const origem = searchParams.get('origem') ?? '';
   const [cidadeId, setCidadeId] = useState<string | null>(null);
 
-  const cidades = cidadesDoFunil(rede, operadora);
+  const cidades = cidadesDoFunil(rede || 'saude', operadora);
 
-  // Sem rede válida não dá pra saber quais cidades oferecer — volta pro início do funil.
+  // Sem opções de cidades volta pro início
   useEffect(() => {
     if (cidades.length === 0) router.replace('/rede');
   }, [cidades.length, router]);
@@ -25,13 +27,19 @@ function CidadeConteudo() {
     const params = new URLSearchParams();
     if (rede) params.set('rede', rede);
     if (operadora) params.set('operadora', operadora);
+    if (origem) params.set('origem', origem);
     params.set('cidade', cidadeId);
     router.push(`/pesquisar?${params.toString()}`);
   }
 
-  const paramsVoltar = new URLSearchParams();
-  if (rede) paramsVoltar.set('rede', rede);
-  const hrefVoltar = `/plano${paramsVoltar.toString() ? `?${paramsVoltar.toString()}` : ''}`;
+  let hrefVoltar = '/rede';
+  if (origem === 'exames' || origem === 'clinicas') {
+    hrefVoltar = '/beneficios';
+  } else if (operadora) {
+    const paramsVoltar = new URLSearchParams();
+    if (rede) paramsVoltar.set('rede', rede);
+    hrefVoltar = `/plano${paramsVoltar.toString() ? `?${paramsVoltar.toString()}` : ''}`;
+  }
 
   return (
     <FundoHero hrefVoltar={hrefVoltar}>
@@ -50,9 +58,9 @@ function CidadeConteudo() {
       </div>
 
       <div className="mt-8 flex justify-center">
-        <button type="button" onClick={continuar} disabled={!cidadeId} className={BOTAO_FUNIL_CONTINUAR_CLASSES}>
+        <BotaoFunil onClick={continuar} disabled={!cidadeId} variante="continuar">
           CLIQUE PARA CONTINUAR
-        </button>
+        </BotaoFunil>
       </div>
     </FundoHero>
   );

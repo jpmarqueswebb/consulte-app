@@ -49,3 +49,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# pasta local de desenvolvimento
+/consulte-app

@@ -90,6 +90,59 @@ export type ProfissionalComVinculos = Profissional & {
   locais: (Local & { telefone: string | null; whatsapp: string | null; whatsapp_valido: boolean })[];
 };
 
+export type Beneficiario = {
+  id: string;
+  corretora_id: string;
+  nome: string;
+  cpf: string;
+  data_nascimento: string;
+  endereco: string | null;
+  foto_url: string | null;
+  status: 'ativo' | 'inativo';
+  created_at: string;
+  updated_at: string;
+};
+
+export type BeneficiarioDependente = {
+  id: string;
+  titular_id: string;
+  nome: string;
+  cpf: string | null;
+  data_nascimento: string;
+  endereco: string | null;
+  foto_url: string | null;
+  parentesco: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ParceiroBeneficio = {
+  id: string;
+  corretora_id: string;
+  cidade_id: string;
+  nome: string;
+  slug: string;
+  categoria: string;
+  desconto_descricao: string;
+  telefone: string | null;
+  whatsapp: string | null;
+  endereco: string | null;
+  logo_url: string | null;
+  ativo: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ConsultaParceiroLog = {
+  id: string;
+  parceiro_id: string;
+  termo_buscado: string;
+  status_resultado: 'ativo' | 'inativo' | 'nao_encontrado';
+  titular_id: string | null;
+  dependente_id: string | null;
+  data_consulta: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -145,6 +198,30 @@ export type Database = {
         Row: ProfissionalLocal;
         Insert: Partial<ProfissionalLocal> & Pick<ProfissionalLocal, 'profissional_id' | 'local_id'>;
         Update: Partial<ProfissionalLocal>;
+        Relationships: [];
+      };
+      beneficiarios: {
+        Row: Beneficiario;
+        Insert: Partial<Beneficiario> & Pick<Beneficiario, 'corretora_id' | 'nome' | 'cpf' | 'data_nascimento'>;
+        Update: Partial<Beneficiario>;
+        Relationships: [];
+      };
+      beneficiarios_dependentes: {
+        Row: BeneficiarioDependente;
+        Insert: Partial<BeneficiarioDependente> & Pick<BeneficiarioDependente, 'titular_id' | 'nome' | 'data_nascimento'>;
+        Update: Partial<BeneficiarioDependente>;
+        Relationships: [];
+      };
+      parceiros_beneficios: {
+        Row: ParceiroBeneficio;
+        Insert: Partial<ParceiroBeneficio> & Pick<ParceiroBeneficio, 'corretora_id' | 'cidade_id' | 'nome' | 'slug' | 'categoria' | 'desconto_descricao'>;
+        Update: Partial<ParceiroBeneficio>;
+        Relationships: [];
+      };
+      consultas_parceiros_log: {
+        Row: ConsultaParceiroLog;
+        Insert: Partial<ConsultaParceiroLog> & Pick<ConsultaParceiroLog, 'parceiro_id' | 'termo_buscado' | 'status_resultado'>;
+        Update: Partial<ConsultaParceiroLog>;
         Relationships: [];
       };
     };

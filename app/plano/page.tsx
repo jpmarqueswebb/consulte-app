@@ -4,7 +4,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { FundoHero } from '@/components/FundoHero';
 import { SeletorOpcao } from '@/components/SeletorOpcao';
-import { BOTAO_FUNIL_CONTINUAR_CLASSES, labelOpcao, operadorasDaRede } from '@/lib/fluxo';
+import { BotaoFunil } from '@/components/BotaoFunil';
+import { labelOpcao, operadorasDaRede } from '@/lib/fluxo';
 
 function PlanoConteudo() {
   const router = useRouter();
@@ -38,9 +39,9 @@ function PlanoConteudo() {
       </div>
 
       <div className="mt-8 flex justify-center">
-        <button type="button" onClick={continuar} disabled={!operadoraId} className={BOTAO_FUNIL_CONTINUAR_CLASSES}>
+        <BotaoFunil onClick={continuar} disabled={!operadoraId} variante="continuar">
           CLIQUE PARA CONTINUAR
-        </button>
+        </BotaoFunil>
       </div>
     </FundoHero>
   );

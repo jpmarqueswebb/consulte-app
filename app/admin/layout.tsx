@@ -18,9 +18,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-gray-50">
       <header className="border-b border-gray-200 bg-white px-4 py-3">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <nav className="flex gap-4 text-sm font-medium text-gray-700">
-            <Link href="/admin">Profissionais</Link>
-            <Link href="/admin/locais/novo">Novo local</Link>
+          <nav className="flex flex-wrap gap-4 text-sm font-medium text-gray-700">
+            <Link href="/admin" className="hover:text-blue-600">Profissionais</Link>
+            <Link href="/admin/beneficiarios" className="hover:text-blue-600">Beneficiários</Link>
+            <Link href="/admin/parceiros" className="hover:text-blue-600">Empresas Parceiras</Link>
+            <Link href="/admin/logs" className="hover:text-blue-600">Consultas dos Parceiros</Link>
+            <Link href="/admin/locais/novo" className="hover:text-blue-600">Novo local</Link>
           </nav>
           <LogoutButton />
         </div>

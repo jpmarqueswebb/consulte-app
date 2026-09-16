@@ -12,6 +12,9 @@ const sora = Sora({
 export const metadata: Metadata = {
   title: "Consulte",
   description: "Busca de rede médica credenciada Amil em Itabirito/MG",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

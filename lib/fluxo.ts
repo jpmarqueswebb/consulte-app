@@ -15,17 +15,26 @@ export function labelOpcao(opcao: OpcaoFluxo): string {
 }
 
 /**
- * Redes credenciadas exibidas na página 2. A escolha aqui segmenta todo o resto
- * do funil (ver REDE_TIPO): rede de saúde só mostra médicos, rede odontológica
- * só mostra dentistas — da busca até a ficha.
+ * Opções principais exibidas na primeira escolha do funil (/rede).
  */
 export const REDES: OpcaoFluxo[] = [
-  { id: 'saude', nome: 'Saúde' },
-  { id: 'odontologico', nome: 'Odontológico' },
+  { id: 'rede-credenciada', nome: 'Rede credenciada' },
+  { id: 'consulte-beneficios', nome: 'Consulte Benefícios' },
+  { id: 'consulte-parceiros', nome: 'Consulte Parceiros' },
 ];
 
-/** Rede escolhida na página 2 → tipo de profissional que a busca deve retornar. */
+/**
+ * Subopções exibidas na tela do Consulte Benefícios (/beneficios).
+ */
+export const OPCOES_BENEFICIOS: OpcaoFluxo[] = [
+  { id: 'pratique', nome: 'Programa Pratique' },
+  { id: 'exames', nome: 'Descontos em exames', label: 'Descontos em exames (Laboratórios)' },
+  { id: 'clinicas', nome: 'Desconto em clínicas' },
+];
+
+/** Rede escolhida no funil → tipo de profissional que a busca deve retornar. */
 export const REDE_TIPO: Record<string, TipoProfissional> = {
+  'rede-credenciada': 'medico',
   saude: 'medico',
   odontologico: 'dentista',
 };
@@ -156,9 +165,20 @@ const ESPECIALIDADES_CONSULTE_BENEFICIOS_INOVAR = [
   'Ultrassom Músculo e Articulações (por articulação)',
 ];
 
-/** Lista final exibida na página de pesquisa: união das duas acima, sem repetir "Nutricionista"/"Psicologia". */
+const CATEGORIAS_PARCEIROS_BENEFICIOS = [
+  'Farmácia / Drogaria',
+  'Ótica',
+  'Laboratório / Exames',
+  'Academia / Bem-estar',
+];
+
+/** Lista final exibida na página de pesquisa: união das clínicas conveniadas e categorias de empresas parceiras. */
 export const ESPECIALIDADES_CONSULTE_BENEFICIOS = Array.from(
-  new Set([...ESPECIALIDADES_CONSULTE_BENEFICIOS_CENTRO_OCUPACIONAL, ...ESPECIALIDADES_CONSULTE_BENEFICIOS_INOVAR])
+  new Set([
+    ...CATEGORIAS_PARCEIROS_BENEFICIOS,
+    ...ESPECIALIDADES_CONSULTE_BENEFICIOS_CENTRO_OCUPACIONAL,
+    ...ESPECIALIDADES_CONSULTE_BENEFICIOS_INOVAR,
+  ])
 );
 
 /**
@@ -198,13 +218,11 @@ export const CIDADES_POR_REDE: Record<string, OpcaoCidade[]> = {
 
 /**
  * Operadoras que restringem as cidades da página 4 a um subconjunto — Convênio
- * TEM Saúde e Consulte Benefícios atendem só Sete Lagoas, mesmo a rede de
- * saúde cobrindo Itabirito também. Quando a operadora não estiver aqui, usa
- * a lista normal da rede (CIDADES_POR_REDE).
+ * TEM Saúde atende só Sete Lagoas; Consulte Benefícios cobre Itabirito e Sete Lagoas.
  */
 export const CIDADES_POR_OPERADORA: Record<string, OpcaoCidade[]> = {
   'tem-saude': [SETE_LAGOAS],
-  'consulte-beneficios': [SETE_LAGOAS],
+  'consulte-beneficios': [ITABIRITO, SETE_LAGOAS],
 };
 
 /** Cidades a exibir na página 4 para a rede escolhida (vazio se a rede for inválida). */
