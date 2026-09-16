@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default async function AdminLogsPage() {
   const supabase = await createClient();
@@ -21,68 +22,68 @@ export default async function AdminLogsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-bold text-gray-900">Histórico de Consultas dos Parceiros</h1>
-          <p className="text-xs text-gray-500">
-            Acompanhamento em tempo real das pesquisas e validações de descontos realizadas nos terminais.
-          </p>
-        </div>
-      </div>
+      <AdminHeader
+        titulo="Histórico de Consultas dos Parceiros"
+        subtitulo="Acompanhamento em tempo real das validações de descontos realizadas nos terminais."
+      />
 
-      <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-white">
-        <table className="min-w-full divide-y divide-gray-200 text-xs">
-          <thead className="bg-gray-50 text-gray-700">
+      <div className="overflow-x-auto rounded-2xl border border-white/15 bg-white/5 backdrop-blur-md">
+        <table className="min-w-full divide-y divide-white/10 text-xs">
+          <thead className="bg-white/10 text-white font-semibold">
             <tr>
-              <th className="px-4 py-3 text-left font-semibold">Data / Hora</th>
-              <th className="px-4 py-3 text-left font-semibold">Empresa Parceira</th>
-              <th className="px-4 py-3 text-left font-semibold">Termo Consultado</th>
-              <th className="px-4 py-3 text-left font-semibold">Status do Resultado</th>
-              <th className="px-4 py-3 text-left font-semibold">Cliente Identificado</th>
+              <th className="px-4 py-3 text-left">Data / Hora</th>
+              <th className="px-4 py-3 text-left">Empresa Parceira</th>
+              <th className="px-4 py-3 text-left">Termo Consultado</th>
+              <th className="px-4 py-3 text-left">Status do Resultado</th>
+              <th className="px-4 py-3 text-left">Cliente Identificado</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 text-gray-800">
-            {(logs ?? []).map((log: any) => {
-              const parceiroNome = log.parceiros_beneficios?.nome || 'Parceiro';
-              const clienteNome = log.beneficiarios?.nome || '—';
-
-              return (
-                <tr key={log.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 whitespace-nowrap text-gray-500 font-mono">
-                    {formatarDataHora(log.data_consulta)}
-                  </td>
-                  <td className="px-4 py-3 font-semibold text-gray-900">
-                    {parceiroNome}
-                  </td>
-                  <td className="px-4 py-3 font-mono">
-                    {log.termo_buscado}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                        log.status_resultado === 'ativo'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : log.status_resultado === 'inativo'
-                          ? 'bg-rose-100 text-rose-800'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {log.status_resultado.toUpperCase()}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 font-medium">
-                    {clienteNome}
-                  </td>
-                </tr>
-              );
-            })}
-
-            {(!logs || logs.length === 0) && (
+          <tbody className="divide-y divide-white/10 text-white/90">
+            {(logs ?? []).length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
-                  Nenhuma consulta registrada ainda.
+                <td colSpan={5} className="px-4 py-8 text-center text-white/60">
+                  Nenhuma consulta registrada nos terminais até o momento.
                 </td>
               </tr>
+            ) : (
+              (logs ?? []).map((log: any) => {
+                const parceiroNome = log.parceiros_beneficios?.nome || 'Parceiro';
+                const clienteNome = log.beneficiarios?.nome || 'Nao identificado';
+
+                return (
+                  <tr key={log.id} className="hover:bg-white/10 transition-colors">
+                    <td className="px-4 py-3 whitespace-nowrap text-white/60 font-mono">
+                      {formatarDataHora(log.data_consulta)}
+                    </td>
+                    <td className="px-4 py-3 font-bold text-white">
+                      {parceiroNome}
+                    </td>
+                    <td className="px-4 py-3 font-mono text-brand-sky">
+                      {log.termo_buscado}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                          log.resultado === 'ativo'
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30'
+                            : log.resultado === 'inativo'
+                            ? 'bg-rose-500/20 text-rose-300 border-rose-400/30'
+                            : 'bg-amber-500/20 text-amber-300 border-amber-400/30'
+                        }`}
+                      >
+                        {log.resultado === 'ativo'
+                          ? 'Ativo'
+                          : log.resultado === 'inativo'
+                          ? 'Inativo'
+                          : 'Nao encontrado'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 font-medium text-white/80">
+                      {clienteNome}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

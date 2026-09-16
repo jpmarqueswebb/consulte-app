@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { LocalForm } from '@/components/admin/LocalForm';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default async function EditarLocalPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -24,8 +25,14 @@ export default async function EditarLocalPage({ params }: { params: Promise<{ id
 
   return (
     <div>
-      <h1 className="mb-4 text-lg font-bold text-gray-900">Editar local</h1>
-      <LocalForm local={local} cidades={cidades ?? []} corretoraId={adminUser?.corretora_id ?? local.corretora_id} />
+      <AdminHeader
+        titulo={`Editar Local: ${local.nome}`}
+        subtitulo="Atualize endereço, telefones, WhatsApp e horários de atendimento."
+        hrefVoltar="/admin"
+      />
+      <div className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md">
+        <LocalForm local={local} cidades={cidades ?? []} corretoraId={adminUser?.corretora_id ?? local.corretora_id} />
+      </div>
     </div>
   );
 }

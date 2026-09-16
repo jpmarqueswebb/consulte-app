@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { ParceiroForm } from '@/components/admin/ParceiroForm';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default async function NovoParceiroPage() {
   const supabase = await createClient();
@@ -8,13 +8,14 @@ export default async function NovoParceiroPage() {
 
   return (
     <div>
-      <div className="mb-4">
-        <Link href="/admin/parceiros" className="text-xs text-blue-600 hover:underline">
-          ← Voltar para parceiros
-        </Link>
-        <h1 className="mt-1 text-lg font-bold text-gray-900">Nova Empresa Parceira</h1>
+      <AdminHeader
+        titulo="Cadastrar Nova Empresa Parceira"
+        subtitulo="Cadastre o estabelecimento, a regra de desconto e o link exclusivo do parceiro."
+        hrefVoltar="/admin/parceiros"
+      />
+      <div className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md">
+        <ParceiroForm cidades={cidades ?? []} />
       </div>
-      <ParceiroForm cidades={cidades ?? []} />
     </div>
   );
 }

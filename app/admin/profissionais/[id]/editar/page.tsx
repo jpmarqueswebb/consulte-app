@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ProfissionalForm } from '@/components/admin/ProfissionalForm';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default async function EditarProfissionalPage({
   params,
@@ -38,19 +39,25 @@ export default async function EditarProfissionalPage({
 
   return (
     <div>
-      <h1 className="mb-4 text-lg font-bold text-gray-900">Editar profissional</h1>
-      <ProfissionalForm
-        profissional={profissional}
-        especialidadesIniciais={(vinculosEspecialidade ?? []).map((v) => v.especialidade_id)}
-        vinculosIniciais={(vinculosLocal ?? []).map((v) => ({
-          local_id: v.local_id,
-          telefone: v.telefone ?? '',
-          whatsapp: v.whatsapp ?? '',
-        }))}
-        todasEspecialidades={especialidades ?? []}
-        todosLocais={locais ?? []}
-        corretoraId={adminUser?.corretora_id ?? profissional.corretora_id}
+      <AdminHeader
+        titulo={`Editar Profissional: ${profissional.nome}`}
+        subtitulo="Atualize dados cadastrais, especialidades e locais de atendimento."
+        hrefVoltar="/admin"
       />
+      <div className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md">
+        <ProfissionalForm
+          profissional={profissional}
+          especialidadesIniciais={(vinculosEspecialidade ?? []).map((v) => v.especialidade_id)}
+          vinculosIniciais={(vinculosLocal ?? []).map((v) => ({
+            local_id: v.local_id,
+            telefone: v.telefone ?? '',
+            whatsapp: v.whatsapp ?? '',
+          }))}
+          todasEspecialidades={especialidades ?? []}
+          todosLocais={locais ?? []}
+          corretoraId={adminUser?.corretora_id ?? profissional.corretora_id}
+        />
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { LocalForm } from '@/components/admin/LocalForm';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default async function NovoLocalPage() {
   const supabase = await createClient();
@@ -14,8 +15,14 @@ export default async function NovoLocalPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-lg font-bold text-gray-900">Novo local</h1>
-      <LocalForm cidades={cidades ?? []} corretoraId={adminUser?.corretora_id ?? ''} />
+      <AdminHeader
+        titulo="Cadastrar Novo Local de Atendimento"
+        subtitulo="Cadastre uma nova clínica, consultório ou hospital credenciado."
+        hrefVoltar="/admin"
+      />
+      <div className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md">
+        <LocalForm cidades={cidades ?? []} corretoraId={adminUser?.corretora_id ?? ''} />
+      </div>
     </div>
   );
 }

@@ -1,16 +1,17 @@
-import Link from 'next/link';
 import { BeneficiarioForm } from '@/components/admin/BeneficiarioForm';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default function NovoBeneficiarioPage() {
   return (
     <div>
-      <div className="mb-4">
-        <Link href="/admin/beneficiarios" className="text-xs text-blue-600 hover:underline">
-          ← Voltar para beneficiários
-        </Link>
-        <h1 className="mt-1 text-lg font-bold text-gray-900">Novo Beneficiário</h1>
+      <AdminHeader
+        titulo="Cadastrar Novo Beneficiário"
+        subtitulo="Adicione o titular e até 4 dependentes com CPF e dados para a carteirinha."
+        hrefVoltar="/admin/beneficiarios"
+      />
+      <div className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md">
+        <BeneficiarioForm />
       </div>
-      <BeneficiarioForm />
     </div>
   );
 }

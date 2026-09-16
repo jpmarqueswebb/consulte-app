@@ -86,22 +86,22 @@ export function BeneficiarioForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-xl border border-gray-200">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {erro && (
-        <div className="rounded-lg bg-red-50 p-3 text-xs text-red-700 border border-red-200">
+        <div className="rounded-xl bg-rose-500/20 p-3.5 text-xs text-rose-100 border border-rose-400/40">
           {erro}
         </div>
       )}
 
       {/* Dados do Titular */}
       <div>
-        <h2 className="text-base font-bold text-gray-900 border-b pb-2 mb-4">
+        <h2 className="text-base font-bold text-white border-b border-white/15 pb-2 mb-4">
           Dados do Titular
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1">
               Nome Completo *
             </label>
             <input
@@ -110,12 +110,12 @@ export function BeneficiarioForm() {
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               placeholder="Nome do titular"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              className="w-full rounded-xl border border-white/20 bg-white/15 px-4 py-2.5 text-sm font-semibold text-white placeholder-white/40 focus:border-brand-sky focus:bg-white/25 focus:outline-none focus:ring-2 focus:ring-brand-sky/20"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1">
               CPF *
             </label>
             <input
@@ -124,12 +124,12 @@ export function BeneficiarioForm() {
               value={cpf}
               onChange={(e) => setCpf(e.target.value)}
               placeholder="000.000.000-00"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              className="w-full rounded-xl border border-white/20 bg-white/15 px-4 py-2.5 text-sm font-semibold text-white placeholder-white/40 focus:border-brand-sky focus:bg-white/25 focus:outline-none focus:ring-2 focus:ring-brand-sky/20"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1">
               Data de Nascimento *
             </label>
             <input
@@ -137,18 +137,18 @@ export function BeneficiarioForm() {
               required
               value={dataNascimento}
               onChange={(e) => setDataNascimento(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              className="w-full rounded-xl border border-white/20 bg-white/15 px-4 py-2.5 text-sm font-semibold text-white focus:border-brand-sky focus:bg-white/25 focus:outline-none focus:ring-2 focus:ring-brand-sky/20"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1">
               Status
             </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as 'ativo' | 'inativo')}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              className="w-full rounded-xl border border-white/20 bg-slate-900/90 px-4 py-2.5 text-sm font-semibold text-white focus:border-brand-sky focus:outline-none focus:ring-2 focus:ring-brand-sky/20"
             >
               <option value="ativo">Ativo</option>
               <option value="inativo">Inativo</option>
@@ -156,7 +156,7 @@ export function BeneficiarioForm() {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-xs uppercase font-bold tracking-wider text-brand-sky mb-1">
               Endereço Completo
             </label>
             <input
@@ -164,20 +164,20 @@ export function BeneficiarioForm() {
               value={endereco}
               onChange={(e) => setEndereco(e.target.value)}
               placeholder="Rua, número, bairro, cidade - UF"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              className="w-full rounded-xl border border-white/20 bg-white/15 px-4 py-2.5 text-sm font-semibold text-white placeholder-white/40 focus:border-brand-sky focus:bg-white/25 focus:outline-none focus:ring-2 focus:ring-brand-sky/20"
             />
           </div>
         </div>
       </div>
 
       {/* Dependentes */}
-      <div className="pt-4 border-t border-gray-200">
+      <div className="pt-6 border-t border-white/15">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-base font-bold text-gray-900">
+            <h2 className="text-base font-bold text-white">
               Dependentes ({dependentes.length}/4)
             </h2>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-white/60">
               Cada dependente ganha uma carteirinha digital dedicada vinculada ao titular.
             </p>
           </div>
@@ -186,7 +186,7 @@ export function BeneficiarioForm() {
             <button
               type="button"
               onClick={adicionarDependente}
-              className="rounded-lg border border-blue-600 px-3 py-1 text-xs font-semibold text-blue-600 hover:bg-blue-50"
+              className="rounded-xl border border-brand-sky/40 bg-brand-sky/15 px-3.5 py-1.5 text-xs font-bold text-brand-sky hover:bg-brand-sky/25 transition-all cursor-pointer"
             >
               + Adicionar dependente
             </button>
@@ -194,15 +194,15 @@ export function BeneficiarioForm() {
         </div>
 
         {dependentes.map((dep, idx) => (
-          <div key={idx} className="p-4 rounded-lg bg-gray-50 border border-gray-200 mb-3 space-y-3">
+          <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/15 mb-3 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-gray-700">
+              <span className="text-xs font-bold text-brand-sky">
                 Dependente #{idx + 1}
               </span>
               <button
                 type="button"
                 onClick={() => removerDependente(idx)}
-                className="text-xs text-red-600 hover:text-red-800"
+                className="text-xs font-semibold text-rose-400 hover:text-rose-300 cursor-pointer"
               >
                 Remover
               </button>
@@ -210,7 +210,7 @@ export function BeneficiarioForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                <label className="block text-[11px] font-bold text-white/70 mb-1">
                   Nome Completo *
                 </label>
                 <input
@@ -219,12 +219,12 @@ export function BeneficiarioForm() {
                   value={dep.nome}
                   onChange={(e) => atualizarDependente(idx, 'nome', e.target.value)}
                   placeholder="Nome do dependente"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm bg-white"
+                  className="w-full rounded-xl border border-white/20 bg-white/15 px-3.5 py-2 text-sm font-semibold text-white placeholder-white/40 focus:border-brand-sky focus:bg-white/25 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                <label className="block text-[11px] font-bold text-white/70 mb-1">
                   Parentesco
                 </label>
                 <input
@@ -232,12 +232,12 @@ export function BeneficiarioForm() {
                   value={dep.parentesco}
                   onChange={(e) => atualizarDependente(idx, 'parentesco', e.target.value)}
                   placeholder="Ex: Filho(a), Cônjuge"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm bg-white"
+                  className="w-full rounded-xl border border-white/20 bg-white/15 px-3.5 py-2 text-sm font-semibold text-white placeholder-white/40 focus:border-brand-sky focus:bg-white/25 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                <label className="block text-[11px] font-bold text-white/70 mb-1">
                   CPF (opcional p/ crianças)
                 </label>
                 <input
@@ -245,12 +245,12 @@ export function BeneficiarioForm() {
                   value={dep.cpf}
                   onChange={(e) => atualizarDependente(idx, 'cpf', e.target.value)}
                   placeholder="000.000.000-00"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm bg-white"
+                  className="w-full rounded-xl border border-white/20 bg-white/15 px-3.5 py-2 text-sm font-semibold text-white placeholder-white/40 focus:border-brand-sky focus:bg-white/25 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                <label className="block text-[11px] font-bold text-white/70 mb-1">
                   Data de Nascimento *
                 </label>
                 <input
@@ -258,7 +258,7 @@ export function BeneficiarioForm() {
                   required
                   value={dep.data_nascimento}
                   onChange={(e) => atualizarDependente(idx, 'data_nascimento', e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm bg-white"
+                  className="w-full rounded-xl border border-white/20 bg-white/15 px-3.5 py-2 text-sm font-semibold text-white focus:border-brand-sky focus:bg-white/25 focus:outline-none"
                 />
               </div>
             </div>
@@ -266,18 +266,18 @@ export function BeneficiarioForm() {
         ))}
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+      <div className="flex justify-end gap-3 pt-6 border-t border-white/15">
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white hover:bg-white/20 transition-all cursor-pointer"
         >
           Cancelar
         </button>
         <button
           type="submit"
           disabled={salvando}
-          className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-700 disabled:opacity-50"
+          className="rounded-xl bg-gradient-to-r from-brand-blue to-brand-navy border border-white/20 px-6 py-2.5 text-xs font-bold text-white hover:scale-102 hover:brightness-110 shadow-lg transition-all disabled:opacity-50 cursor-pointer"
         >
           {salvando ? 'Salvando...' : 'Salvar Beneficiário'}
         </button>

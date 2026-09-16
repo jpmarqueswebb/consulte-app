@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default async function AdminBeneficiariosPage({
   searchParams,
@@ -25,88 +26,112 @@ export default async function AdminBeneficiariosPage({
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <AdminHeader
+        titulo="Beneficiários (Clube de Vantagens)"
+        subtitulo="Titulares e dependentes cadastrados para a Carteirinha Digital e descontos nos parceiros."
+      />
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-lg font-bold text-gray-900">Beneficiários (Clube de Vantagens)</h1>
-          <p className="text-xs text-gray-500">
-            Titulares e dependentes com direito a carteirinha digital e descontos.
-          </p>
+          <span className="text-xs font-semibold uppercase tracking-wider text-brand-sky">
+            Total de titulares: {(beneficiarios ?? []).length}
+          </span>
         </div>
         <Link
           href="/admin/beneficiarios/novo"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-navy border border-white/20 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:scale-102 hover:brightness-110 transition-all"
         >
-          + Novo beneficiário
+          <span>+ Novo Beneficiário</span>
         </Link>
       </div>
 
-      <form className="mt-4 flex gap-2" method="get">
+      {/* Filtro de Busca */}
+      <form className="flex flex-col sm:flex-row gap-3 mb-6" method="get">
         <input
           type="text"
           name="q"
           defaultValue={q}
-          placeholder="Buscar por nome ou CPF do titular"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          placeholder="Buscar por nome ou CPF..."
+          className="flex-1 rounded-xl border border-white/20 bg-white/15 px-4 py-2.5 text-sm font-medium text-white placeholder-white/40 focus:border-brand-sky focus:bg-white/25 focus:outline-none focus:ring-2 focus:ring-brand-sky/20"
         />
-        <select name="status" defaultValue={status} className="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+        <select
+          name="status"
+          defaultValue={status}
+          className="rounded-xl border border-white/20 bg-slate-900/80 px-4 py-2.5 text-sm font-medium text-white focus:border-brand-sky focus:outline-none focus:ring-2 focus:ring-brand-sky/20"
+        >
           <option value="">Todos os status</option>
           <option value="ativo">Ativo</option>
           <option value="inativo">Inativo</option>
         </select>
-        <button type="submit" className="shrink-0 rounded-lg border border-gray-300 px-4 py-2 text-sm">
+        <button
+          type="submit"
+          className="rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 px-5 py-2.5 text-xs font-bold text-white transition-all cursor-pointer"
+        >
           Filtrar
         </button>
       </form>
 
-      <div className="mt-4 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
-        {((beneficiarios ?? []) as any[]).map((b) => (
-          <div key={b.id} className="p-4 hover:bg-gray-50 flex items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-gray-900 text-sm">{b.nome}</span>
-                <span
-                  className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                    b.status === 'ativo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {b.status.toUpperCase()}
-                </span>
-              </div>
-              <p className="text-xs text-gray-500 mt-0.5">
-                CPF: {b.cpf} • Nascimento: {b.data_nascimento}
-              </p>
-              {b.endereco && <p className="text-xs text-gray-400 mt-0.5">📍 {b.endereco}</p>}
-
-              {/* Dependentes */}
-              {b.beneficiarios_dependentes && b.beneficiarios_dependentes.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1.5 items-center">
-                  <span className="text-[11px] font-medium text-gray-500">Dependentes:</span>
-                  {b.beneficiarios_dependentes.map((dep: any) => (
-                    <span
-                      key={dep.id}
-                      className="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-[11px] text-gray-700"
-                    >
-                      {dep.nome} ({dep.parentesco})
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="text-right shrink-0">
-              <Link
-                href={`/carteirinha?cpf=${encodeURIComponent(b.cpf)}`}
-                target="_blank"
-                className="text-xs font-semibold text-blue-600 hover:text-blue-800 underline"
-              >
-                Ver Carteirinha ↗
-              </Link>
-            </div>
+      {/* Lista de Beneficiários */}
+      <div className="divide-y divide-white/10 rounded-2xl border border-white/15 bg-white/5 backdrop-blur-md overflow-hidden">
+        {(beneficiarios ?? []).length === 0 ? (
+          <div className="p-8 text-center text-sm text-white/60">
+            Nenhum beneficiário encontrado.
           </div>
-        ))}
+        ) : (
+          ((beneficiarios as any[]) ?? []).map((b: any) => (
+            <div
+              key={b.id}
+              className="p-5 hover:bg-white/10 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+            >
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-bold text-white">{b.nome}</span>
+                  <span
+                    className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                      b.status === 'ativo'
+                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30'
+                        : 'bg-rose-500/20 text-rose-300 border-rose-400/30'
+                    }`}
+                  >
+                    {b.status.toUpperCase()}
+                  </span>
+                </div>
+                <p className="text-xs text-white/70">
+                  CPF: <strong className="text-white">{b.cpf}</strong> • Nasc:{' '}
+                  <span className="text-white/80">{b.data_nascimento}</span>
+                </p>
 
-        {(!beneficiarios || beneficiarios.length === 0) && (
-          <p className="p-4 text-center text-sm text-gray-500">Nenhum beneficiário encontrado.</p>
+                {/* Dependentes vinculados */}
+                {b.beneficiarios_dependentes && b.beneficiarios_dependentes.length > 0 && (
+                  <div className="pt-2">
+                    <span className="text-[11px] font-semibold text-brand-sky block">
+                      Dependentes cadastrados ({b.beneficiarios_dependentes.length}/4):
+                    </span>
+                    <ul className="flex flex-wrap gap-2 mt-1">
+                      {b.beneficiarios_dependentes.map((dep: any) => (
+                        <li
+                          key={dep.id}
+                          className="rounded-lg bg-white/10 border border-white/15 px-2.5 py-1 text-[11px] text-white/80"
+                        >
+                          {dep.nome} ({dep.parentesco})
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <Link
+                  href={`/carteirinha`}
+                  target="_blank"
+                  className="rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-all"
+                >
+                  Ver Carteirinha
+                </Link>
+              </div>
+            </div>
+          ))
         )}
       </div>
     </div>
